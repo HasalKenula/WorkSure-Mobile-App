@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import api from "../services/api";
 
 export default function WorkersScreen() {
   const [workers, setWorkers] = useState([]);
@@ -32,7 +33,7 @@ export default function WorkersScreen() {
 
   const loadWorkers = async () => {
     try {
-      const res = await axios.get("http://10.210.141.97:8080/worker", {
+      const res = await api.get("/worker", {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
