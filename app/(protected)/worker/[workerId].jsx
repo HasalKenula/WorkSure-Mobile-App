@@ -13,6 +13,7 @@ import { useAuth } from "../../../context/AuthContext";
 import DefaultAvatar from "../../../assets/default-user.png";
 import { Ionicons, FontAwesome, MaterialIcons, Feather, AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import api from "../../services/api";
 export default function WorkerProfileScreen() {
   const { jwtToken } = useAuth();
   const router = useRouter();
@@ -44,11 +45,11 @@ export default function WorkerProfileScreen() {
 
     const fetchWorker = async () => {
       try {
-        const res = await fetch(`http://10.210.141.97:8080/worker/id/${workerId}`, {
+        const res = await api.get(`/worker/id/${workerId}`, {
           headers: { Authorization: `Bearer ${jwtToken}` },
         });
-        const data = await res.json();
-        setWorker(data);
+        //const data = await res.json();
+        setWorker(res.data);
       } catch (err) {
         console.log("Error fetching worker:", err);
       } finally {

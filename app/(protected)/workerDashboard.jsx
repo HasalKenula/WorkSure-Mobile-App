@@ -24,6 +24,7 @@ import {
   AntDesign,
   FontAwesome5,
 } from "@expo/vector-icons";
+import api from "../services/api";
 
 const DEFAULT_IMG = require("../../assets/icon.png");
 
@@ -52,8 +53,8 @@ export default function WorkerDashBoard() {
 
     setLoading(true);
     
-    axios
-      .get("http://10.210.141.97:8080/user", config)
+    api
+      .get("/user", config)
       .then((res) => {
         setUserId(res.data.id);
         setLoading(false);
@@ -73,8 +74,8 @@ export default function WorkerDashBoard() {
     if (!userId) return;
     
     try {
-      const response = await axios.get(
-        `http://10.210.141.97:8080/worker/${userId}`,
+      const response = await api.get(
+        `/worker/${userId}`,
         config
       );
       setWorker(response.data);
@@ -93,8 +94,8 @@ export default function WorkerDashBoard() {
     
     setHiresLoading(true);
     try {
-      const response = await axios.get(
-        `http://10.210.141.97:8080/hire/${worker.id}`,
+      const response = await api.get(
+        `/hire/${worker.id}`,
         config
       );
       setHire(response.data || []);
@@ -131,8 +132,8 @@ export default function WorkerDashBoard() {
   /* ---------- TOGGLE FUNCTIONS ---------- */
   const handleToggleBlock = async (hireId) => {
     try {
-      await axios.put(
-        `http://10.210.141.97:8080/hire/toggle-block/${hireId}`,
+      await api.put(
+        `/hire/toggle-block/${hireId}`,
         {},
         config
       );
@@ -157,8 +158,8 @@ export default function WorkerDashBoard() {
 
   const handleTogglePending = async (hireId) => {
     try {
-      await axios.put(
-        `http://10.210.141.97:8080/hire/toggle-pending/${hireId}`,
+      await api.put(
+        `/hire/toggle-pending/${hireId}`,
         {},
         config
       );
@@ -183,8 +184,8 @@ export default function WorkerDashBoard() {
 
   const handleToggleOngoing = async (hireId) => {
     try {
-      await axios.put(
-        `http://10.210.141.97:8080/hire/toggle-ongoging/${hireId}`,
+      await api.put(
+        `/hire/toggle-ongoging/${hireId}`,
         {},
         config
       );
@@ -209,8 +210,8 @@ export default function WorkerDashBoard() {
 
   const handleToggleComplete = async (hireId) => {
     try {
-      await axios.put(
-        `http://10.210.141.97:8080/hire/toggle-complete/${hireId}`,
+      await api.put(
+        `/hire/toggle-complete/${hireId}`,
         {},
         config
       );

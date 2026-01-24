@@ -11,13 +11,13 @@ import {
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import axios from "axios";
+
 import { useLocalSearchParams } from "expo-router";
 import { useAuth } from "../../../context/AuthContext";
 import { Ionicons, MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import api from "../../services/api";
 
-const API = "http://10.210.141.97:8080";
 
 export default function WorkerHire() {
   const { workerId } = useLocalSearchParams();
@@ -42,8 +42,8 @@ export default function WorkerHire() {
   useEffect(() => {
     if (!jwtToken) return;
 
-    axios
-      .get(`${API}/user`, config)
+    api
+      .get(`/user`, config)
       .then(res => setUser(res.data))
       .catch(err => console.log("User load error:", err));
   }, [jwtToken]);
@@ -52,8 +52,8 @@ export default function WorkerHire() {
   useEffect(() => {
     if (!workerId) return;
 
-    axios
-      .get(`${API}/worker/id/${workerId}`, config)
+    api
+      .get(`/worker/id/${workerId}`, config)
       .then(res => setWorker(res.data))
       .catch(err => console.log("Worker load error:", err));
   }, [workerId]);
@@ -64,9 +64,9 @@ export default function WorkerHire() {
 
     // Try different endpoints if 404 occurs
     const endpoints = [
-      `${API}/hire/${workerId}`,
-      `${API}/hire/worker/${workerId}`,
-      `${API}/hire?workerId=${workerId}`
+      `/hire/${workerId}`,
+      `/hire/worker/${workerId}`,
+      `/hire?workerId=${workerId}`
     ];
 
     let successful = false;
@@ -80,7 +80,7 @@ export default function WorkerHire() {
       }
 
       try {
-        const res = await axios.get(endpoints[index], config);
+        const res = await api.get(endpoints[index], config);
         setHires(res.data || []);
         if (user?.id) {
           setMyHires(res.data.filter(h => h.user?.id === user.id));
@@ -120,8 +120,8 @@ export default function WorkerHire() {
     setLoading(true);
 
     try {
-      await axios.post(
-        `${API}/hire`,
+      await api.post(
+        `/hire`,
         {
           workerId,
           userId: user.id,

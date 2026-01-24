@@ -12,7 +12,6 @@ import {
   Modal,
   FlatList,
 } from "react-native";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -25,8 +24,7 @@ import {
   Feather,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-
-const API = "http://192.168.1.6:8080";
+import api from "../services/api";
 
 export default function WorkerProfileUpdate() {
   const { jwtToken, isAuthenticated } = useAuth();
@@ -64,8 +62,8 @@ export default function WorkerProfileUpdate() {
   useEffect(() => {
     if (!jwtToken) return;
 
-    axios
-      .get(`${API}/user`, config)
+    api
+      .get(`/user`, config)
       .then((res) => {
         setUserId(res.data.id);
       })
@@ -84,8 +82,8 @@ export default function WorkerProfileUpdate() {
       if (!userId) return;
 
       try {
-        const response = await axios.get(
-          `${API}/worker/${userId}`,
+        const response = await api.get(
+          `/worker/${userId}`,
           config
         );
         setWorker(response.data);
@@ -303,8 +301,8 @@ export default function WorkerProfileUpdate() {
     };
 
     try {
-      await axios.put(
-        `${API}/worker/${worker.id}`,
+      await api.put(
+        `/worker/${worker.id}`,
         updateData,
         config
       );
