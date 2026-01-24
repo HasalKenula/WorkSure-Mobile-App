@@ -60,6 +60,13 @@ export default function LoginScreen() {
       <TouchableOpacity style={styles.button} onPress={submit}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
+        <Text style={styles.registerText}>
+          Don't have an account?{" "}
+          <Text style={styles.registerLink}>Register</Text>
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -70,4 +77,14 @@ const styles = StyleSheet.create({
   input: { borderWidth: 1, borderColor: "#d1d5db", padding: 10, borderRadius: 8, marginBottom: 10 },
   button: { backgroundColor: "#f59e0b", padding: 15, borderRadius: 8, alignItems: "center" },
   buttonText: { color: "#fff", fontWeight: "bold" },
+  registerText: {
+  marginTop: 20,
+  textAlign: "center",
+  color: "#374151",
+},
+registerLink: {
+  color: "#f59e0b",
+  fontWeight: "bold",
+},
+
 });
