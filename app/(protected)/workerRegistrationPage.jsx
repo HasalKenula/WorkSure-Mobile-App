@@ -383,10 +383,11 @@ export default function WorkerRegistartion(){
                 {/* AVAILABILITY */}
                 <View style={styles.section}>
                     <View style={styles.sectionHeader}>
-                        <MaterialIcons name="work" size={24} color="#f59e0b" />
+                        <Feather name="calendar" size={24} color="#f59e0b" />
                         <Text style={styles.sectionTitle}>Your Work Preferences</Text>
                     </View>
 
+                    <View style={styles.inputContainer}>
                     <Text style={styles.label}>Choose working days</Text>
                     {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d) => (
                         <View key={d} style={styles.checkboxRow}>
@@ -398,7 +399,9 @@ export default function WorkerRegistartion(){
                         <Text>{d}</Text>
                         </View>
                     ))}
+                    </View>
 
+                    <View style={styles.inputContainer}>
                     <Text style={styles.label}>Preferred Location <Text style={{ color: "red" }}>*</Text></Text>
                     <TextInput
                         style={styles.input}
@@ -406,7 +409,9 @@ export default function WorkerRegistartion(){
                         value={location}
                         onChangeText={setLocation}
                     />
+                    </View>
                             
+                    <View style={styles.inputContainer}>
                     <Text style={styles.label}>Preferred Start Time</Text>
                     <TextInput
                         style={styles.input}
@@ -414,7 +419,9 @@ export default function WorkerRegistartion(){
                         value={starttime}
                         onChangeText={setStarttime}
                     />
+                    </View>
                             
+                    <View style={styles.inputContainer}>
                     <Text style={styles.label}>Preferred End Time</Text>
                     <TextInput
                         style={styles.input}
@@ -422,11 +429,15 @@ export default function WorkerRegistartion(){
                         value={endtime}
                         onChangeText={setEndtime}
                     />
+                    </View>
                 </View>
 
                 {/* DOCUMENT UPLOAD */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Upload Document</Text>
+                    <View style={styles.sectionHeader}>
+                        <MaterialIcons name="attach-file" size={24} color="#f59e0b" />
+                        <Text style={styles.sectionTitle}>Upload Document</Text>
+                    </View>
                     <Text style={styles.label}>Please upload your NIC copy, Gramaniladari Certificate, Police Report and other necessary documents as one pdf.<Text style={{ color: "red" }}>*</Text></Text>
                     <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
                         <Text style={styles.uploadText}>
