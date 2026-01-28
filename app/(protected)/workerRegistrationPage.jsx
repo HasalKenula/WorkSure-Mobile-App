@@ -199,33 +199,51 @@ export default function WorkerRegistartion(){
 
                 {/* PERSONAL INFO */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Personal Information</Text>
+                    
+                    <View style={styles.sectionHeader}>
+                        <Ionicons name="person" size={24} color="#f59e0b" />
+                        <Text style={styles.sectionTitle}>Personal Information</Text>
+                    </View>
 
-                    <Text style={styles.label}>Full Name <Text style={{ color: "red" }}>*</Text></Text>
-                    <TextInput placeholder="Enter your fullname" style={styles.input} value={name} onChangeText={setName}></TextInput>
+                    <View>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Full Name <Text style={{ color: "red" }}>*</Text></Text>
+                            <TextInput placeholder="Enter your fullname" style={styles.input} value={name} onChangeText={setName}></TextInput>
+                        </View>
 
-                    <Text style={styles.label}>Email <Text style={{ color: "red" }}>*</Text></Text>
-                    <TextInput placeholder="Enter your email" style={styles.input} value={email} onChangeText={setEmail}></TextInput>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Email <Text style={{ color: "red" }}>*</Text></Text>
+                            <TextInput placeholder="Enter your email" style={styles.input} value={email} onChangeText={setEmail}></TextInput>
+                        </View>
 
-                    <Text style={styles.label}>Contact Number <Text style={{ color: "red" }}>*</Text></Text>
-                    <TextInput placeholder="Enter your phone number" style={styles.input} value={phoneNumber} onChangeText={setPhoneNumber}></TextInput>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Contact Number <Text style={{ color: "red" }}>*</Text></Text>
+                            <TextInput placeholder="Enter your phone number" style={styles.input} value={phoneNumber} onChangeText={setPhoneNumber}></TextInput>
+                        </View>
 
-                    <Text style={styles.label}>NIC <Text style={{ color: "red" }}>*</Text></Text>
-                    <TextInput placeholder="Enter your nic" style={styles.input} value={nic} onChangeText={setnic}></TextInput>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>NIC <Text style={{ color: "red" }}>*</Text></Text>
+                            <TextInput placeholder="Enter your nic" style={styles.input} value={nic} onChangeText={setnic}></TextInput>
+                        </View>
 
-                    <Text style={styles.label}>Address <Text style={{ color: "red" }}>*</Text></Text>
-                    <TextInput placeholder="Enter your address" style={styles.input} value={address} onChangeText={setAddress}></TextInput>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Address <Text style={{ color: "red" }}>*</Text></Text>
+                            <TextInput placeholder="Enter your address" style={styles.input} value={address} onChangeText={setAddress}></TextInput>
+                        </View>
 
-                    <Text style={styles.label}>Select Applying Job Role <Text style={{ color: "red" }}>*</Text></Text>
-                    <View style={styles.pickerWrapper}>
-                        <Picker selectedValue={job} onValueChange={setJob} style={{ height: 50 }}>
-                        <Picker.Item label="Select Job" value=""/>
-                            {jobOptions.map(
-                                (j)=>(
-                                    <Picker.Item key={j} label={j} value={j}/>
-                                )
-                            )}
-                        </Picker>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>Select Applying Job Role <Text style={{ color: "red" }}>*</Text></Text>
+                            <View style={styles.pickerWrapper}>
+                                <Picker selectedValue={job} onValueChange={setJob} style={{ height: 50 }}>
+                                <Picker.Item label="Select Job" value=""/>
+                                    {jobOptions.map(
+                                        (j)=>(
+                                            <Picker.Item key={j} label={j} value={j}/>
+                                        )
+                                    )}
+                                </Picker>
+                            </View>
+                        </View>
                     </View>
                 </View>
 
@@ -426,10 +444,21 @@ const styles = StyleSheet.create(
             textAlign:"center",
             marginTop:10
         },
-        sectionTitle:{
-            fontSize: 18,
-            fontWeight: 600,
-            marginVertical: 14
+        // sectionTitle:{
+        //     fontSize: 18,
+        //     fontWeight: 600,
+        //     marginVertical: 14
+        // },
+        sectionHeader: {
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 20,
+        },
+        sectionTitle: {
+            fontSize: 20,
+            fontWeight: "bold",
+            color: "#1e293b",
+            marginLeft: 10,
         },
         label:{
             fontSize: 14,
@@ -534,6 +563,9 @@ const styles = StyleSheet.create(
         headerSubtitle: {
             fontSize: 16,
             color: "rgba(255, 255, 255, 0.9)",
+        },
+        inputContainer: {
+            marginBottom: 10,
         },
     }
 );
