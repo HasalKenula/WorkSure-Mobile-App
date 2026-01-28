@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { use, useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -97,19 +97,20 @@ export default function WorkerProfileScreen() {
     initializeData();
   }, [fetchWorker, fetchRatings]);
 
-  
 
+  // Refresh when navigating back from feedback
+  useEffect(
+    useCallback(() => {
+        //fetchWorker();
+        fetchRatings();
+      }, [fetchRatings])
+  );
 
-
-
-
-
-
-
-
-
-
-
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchRatings();
+    setRefreshing(false);
+  }, [fetchRatings]);
 
 
   const getWorkingDays = (worker) => {
