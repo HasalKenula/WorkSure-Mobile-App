@@ -248,163 +248,171 @@ export default function WorkerRegistartion(){
                 </View>
 
                 {/* CERTIFICATIONS AND QUALIFICATIONS */}
-                <Text style={styles.sectionTitle}>Certifications and Qualifications</Text>
-                
-                {
-                    certifications.map(
-                        (item, index) => (
-                            <View key={index}style={styles.card}>
-                                <Text style={styles.label}>Certification Name</Text>
-                                <TextInput style={styles.input} placeholder="e.g. NVQ Level 4" value={item.name} onChangeText={
-                                    (text) => {
-                                        const copy = [...certifications];
-                                        copy[index].name = text;
-                                        setCertifications(copy);
-                                    }
-                                }/>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Certifications and Qualifications</Text>
+                    
+                    {
+                        certifications.map(
+                            (item, index) => (
+                                <View key={index}style={styles.card}>
+                                    <Text style={styles.label}>Certification Name</Text>
+                                    <TextInput style={styles.input} placeholder="e.g. NVQ Level 4" value={item.name} onChangeText={
+                                        (text) => {
+                                            const copy = [...certifications];
+                                            copy[index].name = text;
+                                            setCertifications(copy);
+                                        }
+                                    }/>
 
-                                <Text style={styles.label}>Issuing Body</Text>
-                                <TextInput style={styles.input} placeholder="Issuing body" value={item.body} onChangeText={
-                                    (text) => {
-                                        const copy = [...certifications];
-                                        copy[index].body = text;
-                                        setCertifications(copy);
-                                    }
-                                }/>
+                                    <Text style={styles.label}>Issuing Body</Text>
+                                    <TextInput style={styles.input} placeholder="Issuing body" value={item.body} onChangeText={
+                                        (text) => {
+                                            const copy = [...certifications];
+                                            copy[index].body = text;
+                                            setCertifications(copy);
+                                        }
+                                    }/>
 
-                                {
-                                    certifications.length > 1 && (
-                                        <TouchableOpacity style={styles.removeBtn} onPress={() =>
-                                            setCertifications(certifications.filter((_, i) => i !== index))
-                                    }>
-                                            <Text style={styles.removeText}>Remove</Text>
-                                        </TouchableOpacity>
-                                    )
-                                }
-                            </View>
+                                    {
+                                        certifications.length > 1 && (
+                                            <TouchableOpacity style={styles.removeBtn} onPress={() =>
+                                                setCertifications(certifications.filter((_, i) => i !== index))
+                                        }>
+                                                <Text style={styles.removeText}>Remove</Text>
+                                            </TouchableOpacity>
+                                        )
+                                    }
+                                </View>
+                            )
                         )
-                    )
-                }
-                
-                <TouchableOpacity
-                                style={styles.addBtn}
-                                onPress={() =>
-                                setCertifications([
-                                    ...certifications,
-                                    { name: "", body: ""},
-                                ])
-                                }
-                            >
-                                <Text style={styles.addText}>+ Add Certification</Text>
-                </TouchableOpacity>
+                    }
+                    
+                    <TouchableOpacity
+                                    style={styles.addBtn}
+                                    onPress={() =>
+                                    setCertifications([
+                                        ...certifications,
+                                        { name: "", body: ""},
+                                    ])
+                                    }
+                                >
+                                    <Text style={styles.addText}>+ Add Certification</Text>
+                    </TouchableOpacity>
+                </View>
 
                 {/* WORK EXPERIENCES */}
-                <Text style={styles.sectionTitle}>Work Experience</Text>
-                
-                {
-                    experiences.map(
-                        (item, index) => (
-                            <View key={index}style={styles.card}>
-                                <Text style={styles.label}>Job Title</Text>
-                                <TextInput style={styles.input} placeholder="Enter job title" value={item.title} onChangeText={
-                                    (text) => {
-                                        const copy = [...experiences];
-                                        copy[index].title = text;
-                                        setExperiences(copy);
-                                    }
-                                }/>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Work Experience</Text>
+                    
+                    {
+                        experiences.map(
+                            (item, index) => (
+                                <View key={index}style={styles.card}>
+                                    <Text style={styles.label}>Job Title</Text>
+                                    <TextInput style={styles.input} placeholder="Enter job title" value={item.title} onChangeText={
+                                        (text) => {
+                                            const copy = [...experiences];
+                                            copy[index].title = text;
+                                            setExperiences(copy);
+                                        }
+                                    }/>
 
-                                <Text style={styles.label}>Company</Text>
-                                <TextInput style={styles.input} placeholder="Enter company name" value={item.company} onChangeText={
-                                    (text) => {
-                                        const copy = [...experiences];
-                                        copy[index].company = text;
-                                        setExperiences(copy);
-                                    }
-                                }/>
+                                    <Text style={styles.label}>Company</Text>
+                                    <TextInput style={styles.input} placeholder="Enter company name" value={item.company} onChangeText={
+                                        (text) => {
+                                            const copy = [...experiences];
+                                            copy[index].company = text;
+                                            setExperiences(copy);
+                                        }
+                                    }/>
 
-                                <Text style={styles.label}>Years</Text>
-                                <TextInput style={styles.input} placeholder="Enter worked years" value={item.years} onChangeText={
-                                    (text) => {
-                                        const copy = [...experiences];
-                                        copy[index].years = text;
-                                        setExperiences(copy);
-                                    }
-                                }/>
+                                    <Text style={styles.label}>Years</Text>
+                                    <TextInput style={styles.input} placeholder="Enter worked years" value={item.years} onChangeText={
+                                        (text) => {
+                                            const copy = [...experiences];
+                                            copy[index].years = text;
+                                            setExperiences(copy);
+                                        }
+                                    }/>
 
-                                {
-                                    experiences.length > 1 && (
-                                        <TouchableOpacity style={styles.removeBtn} onPress={() =>
-                                            setExperiences(experiences.filter((_, i) => i !== index))
-                                    }>
-                                            <Text style={styles.removeText}>Remove</Text>
-                                        </TouchableOpacity>
-                                    )
-                                }
-                            </View>
+                                    {
+                                        experiences.length > 1 && (
+                                            <TouchableOpacity style={styles.removeBtn} onPress={() =>
+                                                setExperiences(experiences.filter((_, i) => i !== index))
+                                        }>
+                                                <Text style={styles.removeText}>Remove</Text>
+                                            </TouchableOpacity>
+                                        )
+                                    }
+                                </View>
+                            )
                         )
-                    )
-                }
+                    }
 
-                <TouchableOpacity
-                                style={styles.addBtn}
-                                onPress={() =>
-                                setExperiences([
-                                    ...experiences,
-                                    { title: "", company: "", years: ""},
-                                ])
-                                }
-                            >
-                                <Text style={styles.addText}>+ Add Experience</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                                    style={styles.addBtn}
+                                    onPress={() =>
+                                    setExperiences([
+                                        ...experiences,
+                                        { title: "", company: "", years: ""},
+                                    ])
+                                    }
+                                >
+                                    <Text style={styles.addText}>+ Add Experience</Text>
+                    </TouchableOpacity>
+                </View>
 
                 {/* AVAILABILITY */}
-                <Text style={styles.sectionTitle}>Your Work Preferences</Text>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Your Work Preferences</Text>
 
-                <Text style={styles.label}>Choose working days</Text>
-                {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d) => (
-                    <View key={d} style={styles.checkboxRow}>
-                    <Checkbox 
-                        value={days.includes(d)} 
-                        onValueChange={() => toggleDay(d)}
-                        color={days.includes(d) ? "#889094" : "#9ca3af"}
+                    <Text style={styles.label}>Choose working days</Text>
+                    {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d) => (
+                        <View key={d} style={styles.checkboxRow}>
+                        <Checkbox 
+                            value={days.includes(d)} 
+                            onValueChange={() => toggleDay(d)}
+                            color={days.includes(d) ? "#889094" : "#9ca3af"}
+                        />
+                        <Text>{d}</Text>
+                        </View>
+                    ))}
+
+                    <Text style={styles.label}>Preferred Location <Text style={{ color: "red" }}>*</Text></Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="e.g. Colombo"
+                        value={location}
+                        onChangeText={setLocation}
                     />
-                    <Text>{d}</Text>
-                    </View>
-                ))}
-
-                <Text style={styles.label}>Preferred Location <Text style={{ color: "red" }}>*</Text></Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="e.g. Colombo"
-                    value={location}
-                    onChangeText={setLocation}
-                />
                             
-                <Text style={styles.label}>Preferred Start Time</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="08:00"
-                    value={starttime}
-                    onChangeText={setStarttime}
-                />
+                    <Text style={styles.label}>Preferred Start Time</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="08:00"
+                        value={starttime}
+                        onChangeText={setStarttime}
+                    />
                             
-                <Text style={styles.label}>Preferred End Time</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="17:00"
-                    value={endtime}
-                    onChangeText={setEndtime}
-                />
+                    <Text style={styles.label}>Preferred End Time</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="17:00"
+                        value={endtime}
+                        onChangeText={setEndtime}
+                    />
+                </View>
 
                 {/* DOCUMENT UPLOAD */}
-                <Text style={styles.sectionTitle}>Upload Document</Text>
-                <Text style={styles.label}>Please upload your NIC copy, Gramaniladari Certificate, Police Report and other necessary documents as one pdf.<Text style={{ color: "red" }}>*</Text></Text>
-                <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
-                    <Text style={styles.uploadText}>
-                    {document ? document.name : "Upload Documents"}
-                    </Text>
-                </TouchableOpacity>
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Upload Document</Text>
+                    <Text style={styles.label}>Please upload your NIC copy, Gramaniladari Certificate, Police Report and other necessary documents as one pdf.<Text style={{ color: "red" }}>*</Text></Text>
+                    <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
+                        <Text style={styles.uploadText}>
+                        {document ? document.name : "Upload Documents"}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
 
                 {/* Submit */}
                 <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
