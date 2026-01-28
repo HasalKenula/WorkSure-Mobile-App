@@ -78,7 +78,7 @@ export default function WorkerRegistartion(){
             (prev)=> prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
         );
     };
-    
+
     const pickDocument = async () => {
         const result = await DocumentPicker.getDocumentAsync({
             type: ["application/pdf"],
@@ -89,6 +89,82 @@ export default function WorkerRegistartion(){
             setDocument(result.assets[0]);
         }
     };
+
+    const handleSubmit = async () => {
+        if (!document) {
+            Toast.show({
+            type: "error",
+            text1: "Validation",
+            text2: "Please upload document",
+            });
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            const pdfUrl = await uploadFile({
+                uri: document.uri,
+                name: document.name,
+                type: "application/pdf",
+            });
+
+
+            await api.post(
+            "/worker",
+            {
+                fullName: name,
+                email,
+                phoneNumber,
+                nic,
+                address,
+                jobRole: job,
+                preferredStartTime: starttime,
+                preferredEndTime: endtime,
+                preferredServiceLocation: location,
+                pdfUrl,
+                userId,
+
+                mon: days.includes("Mon"),
+                tue: days.includes("Tue"),
+                wed: days.includes("Wed"),
+                thu: days.includes("Thu"),
+                fri: days.includes("Fri"),
+                sat: days.includes("Sat"),
+                sun: days.includes("Sun"),
+
+                certificates: certifications.map((c) => ({
+                certificateName: c.name,
+                issuingBody: c.body,
+                })),
+
+                jobExperiences: experiences.map((e) => ({
+                companyName: e.company,
+                jobTitle: e.title,
+                years: Number(e.years),
+                })),
+            },
+            {
+                headers: { Authorization: `Bearer ${jwtToken}` },
+            }
+            );
+
+            Toast.show({
+            type: "success",
+            text1: "Registration successful!",
+            });
+
+            router.push("/planUpgradePage");
+        } catch (err) {
+            console.log(err);
+            Toast.show({
+            type: "error",
+            text1: "Registration failed",
+            });
+        } finally {
+            setLoading(false);
+        }
+};
 
 
     return(
@@ -279,6 +355,13 @@ export default function WorkerRegistartion(){
                 {document ? document.name : "Upload Documents"}
                 </Text>
             </TouchableOpacity>
+
+            {/* Submit */}
+            <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
+                <Text style={styles.submitText}>Register Account</Text>
+            </TouchableOpacity>
+            
+            <Toast/>
         </ScrollView>
     );
 }
