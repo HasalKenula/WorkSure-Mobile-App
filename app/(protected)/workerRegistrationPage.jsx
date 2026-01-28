@@ -1,4 +1,4 @@
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, ScrollView } from "react-native";
 import {useState, useEffect} from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
@@ -70,9 +70,11 @@ export default function WorkerRegistartion(){
         ]
     );
 
-    
+
     return(
-        <Text>Worker Registration Page</Text>
+        <ScrollView style={styles.container}>
+            <Text style={styles.title}>Register as Skilled Worker</Text>
+        </ScrollView>
     );
 }
 
