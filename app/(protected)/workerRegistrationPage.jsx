@@ -7,6 +7,7 @@ import api from "../services/api";
 import { Picker } from "@react-native-picker/picker";
 import Checkbox from "expo-checkbox";
 import * as DocumentPicker from "expo-document-picker";
+import uploadFile from "../utils/mediaUpload";
 
 export default function WorkerRegistartion(){
     const [name, setName] = useState("");
