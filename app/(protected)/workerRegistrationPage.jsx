@@ -228,6 +228,30 @@ export default function WorkerRegistartion(){
                 <Text>{d}</Text>
                 </View>
             ))}
+
+            <Text style={styles.label}>Preferred Location <Text style={{ color: "red" }}>*</Text></Text>
+            <TextInput
+                style={styles.input}
+                placeholder="e.g. Colombo"
+                value={location}
+                onChangeText={setLocation}
+            />
+                        
+            <Text style={styles.label}>Preferred Start Time</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="08:00"
+                value={starttime}
+                onChangeText={setStarttime}
+            />
+                        
+            <Text style={styles.label}>Preferred End Time</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="17:00"
+                value={endtime}
+                onChangeText={setEndtime}
+            />
         </ScrollView>
     );
 }
