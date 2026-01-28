@@ -68,7 +68,7 @@ export default function WorkerProfileScreen() {
       }
   }, [workerId, jwtToken]);
 
-  // Fetch ratings data
+  // Fetch ratings from database
   const fetchRatings = useCallback(async () => {
     if (!workerId || !jwtToken) return;
     try {
@@ -84,6 +84,18 @@ export default function WorkerProfileScreen() {
       setAverageRating(0);
     }
   }, [workerId, jwtToken]);
+
+  
+  // Initial load
+  useEffect(() => {
+    const initializeData = async () => {
+      setLoading(true);
+      await Promise.all([fetchWorker(), fetchRatings()]);
+      setLoading(false);
+    };
+
+    initializeData();
+  }, [fetchWorker, fetchRatings]);
 
   
 
