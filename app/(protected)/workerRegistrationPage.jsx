@@ -327,7 +327,11 @@ export default function WorkerRegistartion(){
             <Text style={styles.label}>Choose working days</Text>
             {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d) => (
                 <View key={d} style={styles.checkboxRow}>
-                <Checkbox value={days.includes(d)} onValueChange={() => toggleDay(d)} />
+                <Checkbox 
+                    value={days.includes(d)} 
+                    onValueChange={() => toggleDay(d)}
+                    color={days.includes(d) ? "#889094" : "#9ca3af"}
+                />
                 <Text>{d}</Text>
                 </View>
             ))}
