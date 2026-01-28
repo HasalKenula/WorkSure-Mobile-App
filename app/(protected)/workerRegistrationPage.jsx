@@ -157,6 +157,66 @@ export default function WorkerRegistartion(){
                             <Text style={styles.addText}>+ Add Certification</Text>
             </TouchableOpacity>
 
+            {/* WORK EXPERIENCES */}
+            <Text style={styles.sectionTitle}>Work Experience</Text>
+            
+            {
+                experiences.map(
+                    (item, index) => (
+                        <View key={index}style={styles.card}>
+                            <Text style={styles.label}>Job Title</Text>
+                            <TextInput style={styles.input} placeholder="Enter job title" value={item.title} onChangeText={
+                                (text) => {
+                                    const copy = [...experiences];
+                                    copy[index].title = text;
+                                    setExperiences(copy);
+                                }
+                            }/>
+
+                            <Text style={styles.label}>Company</Text>
+                            <TextInput style={styles.input} placeholder="Enter company name" value={item.company} onChangeText={
+                                (text) => {
+                                    const copy = [...experiences];
+                                    copy[index].company = text;
+                                    setExperiences(copy);
+                                }
+                            }/>
+
+                            <Text style={styles.label}>Years</Text>
+                            <TextInput style={styles.input} placeholder="Enter worked years" value={item.years} onChangeText={
+                                (text) => {
+                                    const copy = [...experiences];
+                                    copy[index].years = text;
+                                    setExperiences(copy);
+                                }
+                            }/>
+
+                            {
+                                experiences.length > 1 && (
+                                    <TouchableOpacity style={styles.removeBtn} onPress={() =>
+                                        setExperiences(experiences.filter((_, i) => i !== index))
+                                }>
+                                        <Text style={styles.removeText}>Remove</Text>
+                                    </TouchableOpacity>
+                                )
+                            }
+                        </View>
+                    )
+                )
+            }
+
+            <TouchableOpacity
+                            style={styles.addBtn}
+                            onPress={() =>
+                            setExperiences([
+                                ...experiences,
+                                { title: "", company: "", years: ""},
+                            ])
+                            }
+                        >
+                            <Text style={styles.addText}>+ Add Experience</Text>
+            </TouchableOpacity>
+
         </ScrollView>
     );
 }
