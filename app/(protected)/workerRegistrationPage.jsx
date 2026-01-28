@@ -45,6 +45,32 @@ export default function WorkerRegistartion(){
                 }
             ));
         },[jwtToken]);
+
+    const jobOptions = [
+        "PLUMBER",
+        "ELECTRICIAN",
+        "CARPENTER",
+        "PAINTER",
+        "CLEANER"
+    ];
+
+    const [certifications, setCertifications] = useState(
+        [
+            {
+                name: "", body: ""
+            }
+        ]
+    );
+
+    const [experiences, setExperiences] = useState(
+        [
+            {
+                title: "", company: "", years: ""
+            }
+        ]
+    );
+
+    
     return(
         <Text>Worker Registration Page</Text>
     );
