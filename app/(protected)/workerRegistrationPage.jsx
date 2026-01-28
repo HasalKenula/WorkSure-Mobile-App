@@ -1,7 +1,9 @@
 import { Text, StyleSheet } from "react-native";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
+import Toast from "react-native-toast-message";
+import api from "../services/api";
 
 export default function WorkerRegistartion(){
     const [name, setName] = useState("");
@@ -21,6 +23,28 @@ export default function WorkerRegistartion(){
 
     const {jwtToken} = useAuth();
     const router = useRouter();
+
+    //load user data
+    useEffect(()=>{
+            if(!jwtToken) return;
+    
+            api
+            .get("/user",{headers:{Authorization: `Bearer ${jwtToken}`}})
+            .then((res)=>{
+                setUserId(res.data.id);
+                setName(res.data.name);
+                setEmail(res.data.email);
+                setPhoneNumber(res.data.contact);
+                setAddress(res.data.address);
+            })
+            .catch(()=> Toast.show(
+                {
+                    type: "error",
+                    text1 : "Failed to load user",
+                    text2: "Please try again"
+                }
+            ));
+        },[jwtToken]);
     return(
         <Text>Worker Registration Page</Text>
     );
