@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import api from "../services/api";
 import { Picker } from "@react-native-picker/picker";
+import Checkbox from "expo-checkbox";
 
 export default function WorkerRegistartion(){
     const [name, setName] = useState("");
@@ -217,6 +218,16 @@ export default function WorkerRegistartion(){
                             <Text style={styles.addText}>+ Add Experience</Text>
             </TouchableOpacity>
 
+            {/* AVAILABILITY */}
+            <Text style={styles.sectionTitle}>Your Work Preferences</Text>
+
+            <Text style={styles.label}>Choose working days</Text>
+            {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d) => (
+                <View key={d} style={styles.checkboxRow}>
+                <Checkbox value={days.includes(d)} onValueChange={() => toggleDay(d)} />
+                <Text>{d}</Text>
+                </View>
+            ))}
         </ScrollView>
     );
 }
