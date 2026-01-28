@@ -454,9 +454,13 @@ export default function WorkerRegistartion(){
                 </View>
 
                 {/* Submit */}
-                <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
+                {/* <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
                     <Text style={styles.submitText}>Register Account</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+
+                <Pressable style={styles.submitButton} onPress={handleSubmit}>
+                          <Text style={styles.submitButtonText}>Register Account</Text>
+                </Pressable>
                 
                 <Toast/>
             </ScrollView>
@@ -640,6 +644,28 @@ const styles = StyleSheet.create(
             fontSize: 14,
             color: "#94a3b8",
             marginBottom: 16,
+        },
+        submitButton: {
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#f59e0b",
+            marginHorizontal: 20,
+            marginBottom: 40,
+            marginTop: 10,
+            paddingVertical: 18,
+            borderRadius: 16,
+            shadowColor: "#f59e0b",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 6,
+        },
+        submitButtonText: {
+            color: "#fff",
+            fontWeight: "bold",
+            fontSize: 18,
+            marginLeft: 10,
         },
     }
 );
