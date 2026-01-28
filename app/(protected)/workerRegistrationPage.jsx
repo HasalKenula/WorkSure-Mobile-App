@@ -6,6 +6,7 @@ import Toast from "react-native-toast-message";
 import api from "../services/api";
 import { Picker } from "@react-native-picker/picker";
 import Checkbox from "expo-checkbox";
+import * as DocumentPicker from "expo-document-picker";
 
 export default function WorkerRegistartion(){
     const [name, setName] = useState("");
@@ -71,6 +72,23 @@ export default function WorkerRegistartion(){
             }
         ]
     );
+
+    const toggleDay = (day) => {
+        setDays(
+            (prev)=> prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+        );
+    };
+    
+    const pickDocument = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: ["application/pdf"],
+            copyToCacheDirectory: true,
+        });
+
+        if (!result.canceled) {
+            setDocument(result.assets[0]);
+        }
+    };
 
 
     return(
@@ -252,6 +270,15 @@ export default function WorkerRegistartion(){
                 value={endtime}
                 onChangeText={setEndtime}
             />
+
+            {/* DOCUMENT UPLOAD */}
+            <Text style={styles.sectionTitle}>Upload Document</Text>
+            <Text style={styles.label}>Please upload your NIC copy, Gramaniladari Certificate, Police Report and other necessary documents as one pdf.<Text style={{ color: "red" }}>*</Text></Text>
+            <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
+                <Text style={styles.uploadText}>
+                {document ? document.name : "Upload Documents"}
+                </Text>
+            </TouchableOpacity>
         </ScrollView>
     );
 }
