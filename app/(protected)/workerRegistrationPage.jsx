@@ -1,4 +1,4 @@
-import { Text, StyleSheet, ScrollView } from "react-native";
+import { Text, StyleSheet, ScrollView ,TextInput} from "react-native";
 import {useState, useEffect} from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
@@ -74,6 +74,25 @@ export default function WorkerRegistartion(){
     return(
         <ScrollView style={styles.container}>
             <Text style={styles.title}>Register as Skilled Worker</Text>
+
+            {/* PERSONAL INFO */}
+            <Text style={styles.sectionTitle}>Personal Information</Text>
+
+            <Text style={styles.label}>Full Name <Text style={{ color: "red" }}>*</Text></Text>
+            <TextInput placeholder="Enter your fullname" style={styles.input} value={name} onChangeText={setName}></TextInput>
+
+            <Text style={styles.label}>Email <Text style={{ color: "red" }}>*</Text></Text>
+            <TextInput placeholder="Enter your email" style={styles.input} value={email} onChangeText={setEmail}></TextInput>
+
+            <Text style={styles.label}>Contact Number <Text style={{ color: "red" }}>*</Text></Text>
+            <TextInput placeholder="Enter your phone number" style={styles.input} value={phoneNumber} onChangeText={setPhoneNumber}></TextInput>
+
+            <Text style={styles.label}>NIC <Text style={{ color: "red" }}>*</Text></Text>
+            <TextInput placeholder="Enter your nic" style={styles.input} value={nic} onChangeText={setnic}></TextInput>
+
+            <Text style={styles.label}>Address <Text style={{ color: "red" }}>*</Text></Text>
+            <TextInput placeholder="Enter your address" style={styles.input} value={address} onChangeText={setAddress}></TextInput>
+
         </ScrollView>
     );
 }
