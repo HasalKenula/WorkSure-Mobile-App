@@ -1,6 +1,21 @@
 import { Text, StyleSheet } from "react-native";
+import {useState} from "react";
 
 export default function WorkerRegistartion(){
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [nic, setnic] = useState("");
+    const [address, setAddress] = useState("");
+    const [job, setJob] = useState("");
+    const [location, setLocation] = useState("");
+    const [starttime, setStarttime] = useState("");
+    const [endtime, setEndtime] = useState("");
+    const [days, setDays] = useState([]);
+    const [document, setDocument] = useState(null);
+    
+    const [userId, setUserId] = useState(null);
+    const [loading, setLoading] = useState(false);
     return(
         <Text>Worker Registration Page</Text>
     );
@@ -91,7 +106,7 @@ const styles = StyleSheet.create(
             borderRadius: 8,
             backgroundColor: "#fff",
             marginBottom: 12,
-            overflow: "hidden", // IMPORTANT
+            overflow: "hidden", 
         },
     }
 );
