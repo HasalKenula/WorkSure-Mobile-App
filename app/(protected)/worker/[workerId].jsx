@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
+  Alert,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { useAuth } from "../../../context/AuthContext";
@@ -14,6 +16,7 @@ import DefaultAvatar from "../../../assets/default-user.png";
 import { Ionicons, FontAwesome, MaterialIcons, Feather, AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
+
 export default function WorkerProfileScreen() {
   const { jwtToken } = useAuth();
   const router = useRouter();
@@ -21,29 +24,34 @@ export default function WorkerProfileScreen() {
 
   const [worker, setWorker] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [ratings, setRatings] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   // mock user ratings
-  const userRate = [
-    {
-      id: 1,
-      name: "John Doe",
-      date: "2023/10/26",
-      rating: 5,
-      message: "Excellent work! Highly recommended."
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      date: "2023/11/02",
-      rating: 4,
-      message: "Good work, punctual and professional."
-    },
-  ];
+  // const userRate = [
+  //   {
+  //     id: 1,
+  //     name: "John Doe",
+  //     date: "2023/10/26",
+  //     rating: 5,
+  //     message: "Excellent work! Highly recommended."
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Jane Smith",
+  //     date: "2023/11/02",
+  //     rating: 4,
+  //     message: "Good work, punctual and professional."
+  //   },
+  // ];
 
-  useEffect(() => {
+
+  // Fetch worker data
+
+  const fetchWorker = useCallback(async () => {
     if (!workerId || !jwtToken) return;
 
-    const fetchWorker = async () => {
       try {
         const res = await api.get(`/worker/id/${workerId}`, {
           headers: { Authorization: `Bearer ${jwtToken}` },
@@ -52,10 +60,11 @@ export default function WorkerProfileScreen() {
         setWorker(res.data);
       } catch (err) {
         console.log("Error fetching worker:", err);
+        Alert.alert("Error", "Failed to load worker profile.");
       } finally {
         setLoading(false);
       }
-    };
+    }, [workerId, jwtToken]);
 
     fetchWorker();
   }, [workerId, jwtToken]);
