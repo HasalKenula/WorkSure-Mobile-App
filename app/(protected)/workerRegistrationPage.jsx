@@ -1,5 +1,7 @@
 import { Text, StyleSheet } from "react-native";
 import {useState} from "react";
+import { useAuth } from "../../context/AuthContext";
+import { useRouter } from "expo-router";
 
 export default function WorkerRegistartion(){
     const [name, setName] = useState("");
@@ -13,9 +15,12 @@ export default function WorkerRegistartion(){
     const [endtime, setEndtime] = useState("");
     const [days, setDays] = useState([]);
     const [document, setDocument] = useState(null);
-    
+
     const [userId, setUserId] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const {jwtToken} = useAuth();
+    const router = useRouter();
     return(
         <Text>Worker Registration Page</Text>
     );
