@@ -94,8 +94,17 @@ export default function WorkerRegistartion(){
         if (!document) {
             Toast.show({
             type: "error",
-            text1: "Validation",
+            text1: "Error",
             text2: "Please upload document",
+            });
+            return;
+        }
+
+        if(!name || !email || !phoneNumber || !nic || !address || !job || !location){
+            Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Please fill required fields",
             });
             return;
         }
