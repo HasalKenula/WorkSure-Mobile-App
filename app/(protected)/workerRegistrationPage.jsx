@@ -1,4 +1,4 @@
-import { Text, StyleSheet, ScrollView ,TextInput,View} from "react-native";
+import { Text, StyleSheet, ScrollView ,TextInput,View, TouchableOpacity} from "react-native";
 import {useState, useEffect} from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
@@ -105,6 +105,57 @@ export default function WorkerRegistartion(){
                     )}
                 </Picker>
             </View>
+
+            {/* CERTIFICATIONS AND QUALIFICATIONS */}
+            <Text style={styles.sectionTitle}>Certifications and Qualifications</Text>
+            
+            {
+                certifications.map(
+                    (item, index) => (
+                        <View key={index}style={styles.card}>
+                            <Text style={styles.label}>Certification Name</Text>
+                            <TextInput style={styles.input} placeholder="e.g. NVQ Level 4" value={item.name} onChangeText={
+                                (text) => {
+                                    const copy = [...certifications];
+                                    copy[index].name = text;
+                                    setCertifications(copy);
+                                }
+                            }/>
+
+                            <Text style={styles.label}>Issuing Body</Text>
+                            <TextInput style={styles.input} placeholder="Issuing body" value={item.body} onChangeText={
+                                (text) => {
+                                    const copy = [...certifications];
+                                    copy[index].body = text;
+                                    setCertifications(copy);
+                                }
+                            }/>
+
+                            {
+                                certifications.length > 1 && (
+                                    <TouchableOpacity style={styles.removeBtn} onPress={() =>
+                                        setCertifications(certifications.filter((_, i) => i !== index))
+                                }>
+                                        <Text style={styles.removeText}>Remove</Text>
+                                    </TouchableOpacity>
+                                )
+                            }
+                        </View>
+                    )
+                )
+            }
+            
+            <TouchableOpacity
+                            style={styles.addBtn}
+                            onPress={() =>
+                            setCertifications([
+                                ...certifications,
+                                { name: "", body: ""},
+                            ])
+                            }
+                        >
+                            <Text style={styles.addText}>+ Add Certification</Text>
+            </TouchableOpacity>
 
         </ScrollView>
     );
