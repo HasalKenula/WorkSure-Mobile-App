@@ -16,6 +16,7 @@ import DefaultAvatar from "../../../assets/default-user.png";
 import { Ionicons, FontAwesome, MaterialIcons, Feather, AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
+import { set } from "date-fns";
 
 export default function WorkerProfileScreen() {
   const { jwtToken } = useAuth();
@@ -63,11 +64,41 @@ export default function WorkerProfileScreen() {
         Alert.alert("Error", "Failed to load worker profile.");
       } finally {
         setLoading(false);
+        setRefreshing(false);
       }
-    }, [workerId, jwtToken]);
-
-    fetchWorker();
   }, [workerId, jwtToken]);
+
+  // Fetch ratings data
+  const fetchRatings = useCallback(async () => {
+    if (!workerId || !jwtToken) return;
+    try {
+      const res = await api.get(`/ratings/worker/${workerId}`, {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      });
+
+      setRatings(res.data);
+      setAverageRating(res.data.average || 0);
+    }catch (err) {
+      console.log("Error fetching ratings:", err);
+      setRatings([]);
+      setAverageRating(0);
+    }
+  }, [workerId, jwtToken]);
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const getWorkingDays = (worker) => {
     if (!worker) return [];
