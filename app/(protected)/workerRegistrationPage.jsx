@@ -1,9 +1,10 @@
-import { Text, StyleSheet, ScrollView ,TextInput} from "react-native";
+import { Text, StyleSheet, ScrollView ,TextInput,View} from "react-native";
 import {useState, useEffect} from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import api from "../services/api";
+import { Picker } from "@react-native-picker/picker";
 
 export default function WorkerRegistartion(){
     const [name, setName] = useState("");
@@ -92,6 +93,18 @@ export default function WorkerRegistartion(){
 
             <Text style={styles.label}>Address <Text style={{ color: "red" }}>*</Text></Text>
             <TextInput placeholder="Enter your address" style={styles.input} value={address} onChangeText={setAddress}></TextInput>
+
+            <Text style={styles.label}>Select Applying Job Role <Text style={{ color: "red" }}>*</Text></Text>
+            <View style={styles.pickerWrapper}>
+                <Picker selectedValue={job} onValueChange={setJob} style={{ height: 50 }}>
+                <Picker.Item label="Select Job" value=""/>
+                    {jobOptions.map(
+                        (j)=>(
+                            <Picker.Item key={j} label={j} value={j}/>
+                        )
+                    )}
+                </Picker>
+            </View>
 
         </ScrollView>
     );
