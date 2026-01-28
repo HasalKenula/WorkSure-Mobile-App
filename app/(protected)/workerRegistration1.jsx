@@ -12,6 +12,9 @@ export default function WorkerRegistrationPage(){
     const [nic, setnic] = useState("");
     const [address, setAddress] = useState("");
     const [job, setJob] = useState("");
+    const [location, setLoaction] = useState("");
+    const [starttime, setStarttime] = useState("");
+    const [endtime, setEndtime] = useState("");
 
     const jobOptions = [
         "PLUMBER",
@@ -25,6 +28,14 @@ export default function WorkerRegistrationPage(){
         [
             {
                 name: "", body: ""
+            }
+        ]
+    );
+
+    const [experiences, setExperiences] = useState(
+        [
+            {
+                title: "", company: "", years: ""
             }
         ]
     );
@@ -87,7 +98,9 @@ export default function WorkerRegistrationPage(){
 
                             {
                                 certifications.length > 1 && (
-                                    <TouchableOpacity style={styles.removeBtn}>
+                                    <TouchableOpacity style={styles.removeBtn} onPress={() =>
+                                        setCertifications(certifications.filter((_, i) => i !== index))
+                                }>
                                         <Text style={styles.removeText}>Remove</Text>
                                     </TouchableOpacity>
                                 )
@@ -97,11 +110,104 @@ export default function WorkerRegistrationPage(){
                 )
             }
 
+            <TouchableOpacity
+                            style={styles.addBtn}
+                            onPress={() =>
+                            setCertifications([
+                                ...certifications,
+                                { name: "", body: ""},
+                            ])
+                            }
+                        >
+                            <Text style={styles.addText}>+ Add Certification</Text>
+            </TouchableOpacity>
+
             {/* WORK EXPERIENCES */}
             <Text style={styles.sectionTitle}>Work Experience</Text>
 
+            {
+                experiences.map(
+                    (item, index) => (
+                        <View key={index}style={styles.card}>
+                            <Text style={styles.label}>Job Title</Text>
+                            <TextInput style={styles.input} placeholder="Enter job title" value={item.title} onChangeText={
+                                (text) => {
+                                    const copy = [...experiences];
+                                    copy[index].title = text;
+                                    setExperiences(copy);
+                                }
+                            }/>
+
+                            <Text style={styles.label}>Company</Text>
+                            <TextInput style={styles.input} placeholder="Enter company name" value={item.company} onChangeText={
+                                (text) => {
+                                    const copy = [...experiences];
+                                    copy[index].company = text;
+                                    setExperiences(copy);
+                                }
+                            }/>
+
+                            <Text style={styles.label}>Years</Text>
+                            <TextInput style={styles.input} placeholder="Enter worked years" value={item.years} onChangeText={
+                                (text) => {
+                                    const copy = [...experiences];
+                                    copy[index].years = text;
+                                    setExperiences(copy);
+                                }
+                            }/>
+
+                            {
+                                experiences.length > 1 && (
+                                    <TouchableOpacity style={styles.removeBtn} onPress={() =>
+                                        setExperiences(experiences.filter((_, i) => i !== index))
+                                }>
+                                        <Text style={styles.removeText}>Remove</Text>
+                                    </TouchableOpacity>
+                                )
+                            }
+                        </View>
+                    )
+                )
+            }
+
+            <TouchableOpacity
+                            style={styles.addBtn}
+                            onPress={() =>
+                            setExperiences([
+                                ...experiences,
+                                { title: "", company: "", years: ""},
+                            ])
+                            }
+                        >
+                            <Text style={styles.addText}>+ Add Experience</Text>
+            </TouchableOpacity>
+
             {/* AVAILABILITY */}
             <Text style={styles.sectionTitle}>Your Work Preferences</Text>
+
+            <Text style={styles.label}>Preferred Location</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="e.g. Colombo"
+                value={location}
+                onChangeText={setLoaction}
+            />
+            
+            <Text style={styles.label}>Preferred Start Time</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="08:00"
+                value={starttime}
+                onChangeText={setStarttime}
+            />
+            
+            <Text style={styles.label}>Preferred End Time</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="17:00"
+                value={endtime}
+                onChangeText={setEndtime}
+            />
 
             {/* DOCUMENT UPLOAD */}
 
@@ -160,6 +266,17 @@ const styles = StyleSheet.create(
         removeText: {
             textAlign: "center",
             color: "#374151",
+        },
+        addBtn: {
+            backgroundColor: "#f59e0b",
+            padding: 12,
+            borderRadius: 8,
+            alignItems: "center",
+            marginBottom: 20,
+        },
+        addText: {
+            color: "#fff",
+            fontWeight: "600",
         },
     }
 );
