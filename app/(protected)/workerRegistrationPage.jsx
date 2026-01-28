@@ -320,6 +320,7 @@ export default function WorkerRegistartion(){
                         experiences.map(
                             (item, index) => (
                                 <View key={index}style={styles.card}>
+                                    <View style={styles.inputContainer}>
                                     <Text style={styles.label}>Job Title</Text>
                                     <TextInput style={styles.input} placeholder="Enter job title" value={item.title} onChangeText={
                                         (text) => {
@@ -328,7 +329,9 @@ export default function WorkerRegistartion(){
                                             setExperiences(copy);
                                         }
                                     }/>
+                                    </View>
 
+                                    <View style={styles.inputContainer}>
                                     <Text style={styles.label}>Company</Text>
                                     <TextInput style={styles.input} placeholder="Enter company name" value={item.company} onChangeText={
                                         (text) => {
@@ -337,7 +340,9 @@ export default function WorkerRegistartion(){
                                             setExperiences(copy);
                                         }
                                     }/>
+                                    </View>
 
+                                    <View style={styles.inputContainer}>
                                     <Text style={styles.label}>Years</Text>
                                     <TextInput style={styles.input} placeholder="Enter worked years" value={item.years} onChangeText={
                                         (text) => {
@@ -346,6 +351,7 @@ export default function WorkerRegistartion(){
                                             setExperiences(copy);
                                         }
                                     }/>
+                                    </View>
 
                                     {
                                         experiences.length > 1 && (
@@ -376,7 +382,10 @@ export default function WorkerRegistartion(){
 
                 {/* AVAILABILITY */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Your Work Preferences</Text>
+                    <View style={styles.sectionHeader}>
+                        <MaterialIcons name="work" size={24} color="#f59e0b" />
+                        <Text style={styles.sectionTitle}>Your Work Preferences</Text>
+                    </View>
 
                     <Text style={styles.label}>Choose working days</Text>
                     {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d) => (
