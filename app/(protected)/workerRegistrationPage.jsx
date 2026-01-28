@@ -439,11 +439,18 @@ export default function WorkerRegistartion(){
                         <Text style={styles.sectionTitle}>Upload Document</Text>
                     </View>
                     <Text style={styles.label}>Please upload your NIC copy, Gramaniladari Certificate, Police Report and other necessary documents as one pdf.<Text style={{ color: "red" }}>*</Text></Text>
-                    <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
+
+                    <Pressable style={styles.uploadArea} onPress={pickDocument}>
+                        <MaterialIcons name="cloud-upload" size={48} color="#94a3b8" />
                         <Text style={styles.uploadText}>
                         {document ? document.name : "Upload Documents"}
                         </Text>
-                    </TouchableOpacity>
+                    </Pressable>
+                    {/* <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
+                        <Text style={styles.uploadText}>
+                        {document ? document.name : "Upload Documents"}
+                        </Text>
+                    </TouchableOpacity> */}
                 </View>
 
                 {/* Submit */}
@@ -555,7 +562,16 @@ const styles = StyleSheet.create(
             borderRadius: 8,
             marginTop: 10,
         },
-        uploadText: { color: "#fff", textAlign: "center" , fontWeight:600},
+        uploadText: { 
+            // color: "#fff", 
+            // textAlign: "center" , 
+            // fontWeight:600
+            fontSize: 16,
+            fontWeight: "600",
+            color: "#334155",
+            marginTop: 12,
+            marginBottom: 4,
+        },
         submitBtn: {
             backgroundColor: "#f59e0b",
             padding: 14,
@@ -609,6 +625,21 @@ const styles = StyleSheet.create(
         },
         inputContainer: {
             marginBottom: 10,
+        },
+        uploadArea: {
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#f8fafc",
+            borderWidth: 2,
+            borderColor: "#e2e8f0",
+            borderStyle: "dashed",
+            borderRadius: 16,
+            padding: 30,
+        },
+        uploadSubtext: {
+            fontSize: 14,
+            color: "#94a3b8",
+            marginBottom: 16,
         },
     }
 );
