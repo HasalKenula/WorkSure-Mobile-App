@@ -249,29 +249,38 @@ export default function WorkerRegistartion(){
 
                 {/* CERTIFICATIONS AND QUALIFICATIONS */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Certifications and Qualifications</Text>
+                    
+                    <View style={styles.sectionHeader}>
+                        <MaterialIcons name="school" size={24} color="#f59e0b" />
+                        <Text style={styles.sectionTitle}>Certifications and Qualifications</Text>
+                    </View>
                     
                     {
                         certifications.map(
                             (item, index) => (
                                 <View key={index}style={styles.card}>
-                                    <Text style={styles.label}>Certification Name</Text>
-                                    <TextInput style={styles.input} placeholder="e.g. NVQ Level 4" value={item.name} onChangeText={
-                                        (text) => {
-                                            const copy = [...certifications];
-                                            copy[index].name = text;
-                                            setCertifications(copy);
-                                        }
-                                    }/>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Certification Name</Text>
+                                        <TextInput style={styles.input} placeholder="e.g. NVQ Level 4" value={item.name} onChangeText={
+                                            (text) => {
+                                                const copy = [...certifications];
+                                                copy[index].name = text;
+                                                setCertifications(copy);
+                                            }
+                                            }
+                                        />
+                                    </View>
 
-                                    <Text style={styles.label}>Issuing Body</Text>
-                                    <TextInput style={styles.input} placeholder="Issuing body" value={item.body} onChangeText={
-                                        (text) => {
-                                            const copy = [...certifications];
-                                            copy[index].body = text;
-                                            setCertifications(copy);
-                                        }
-                                    }/>
+                                    <View style={styles.inputContainer}>
+                                        <Text style={styles.label}>Issuing Body</Text>
+                                        <TextInput style={styles.input} placeholder="Issuing body" value={item.body} onChangeText={
+                                            (text) => {
+                                                const copy = [...certifications];
+                                                copy[index].body = text;
+                                                setCertifications(copy);
+                                            }
+                                        }/>
+                                    </View>
 
                                     {
                                         certifications.length > 1 && (
@@ -302,7 +311,10 @@ export default function WorkerRegistartion(){
 
                 {/* WORK EXPERIENCES */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Work Experience</Text>
+                    <View style={styles.sectionHeader}>
+                        <MaterialIcons name="work" size={24} color="#f59e0b" />
+                        <Text style={styles.sectionTitle}>Work Experiences</Text>
+                    </View>
                     
                     {
                         experiences.map(
@@ -470,16 +482,19 @@ const styles = StyleSheet.create(
         },
         label:{
             fontSize: 14,
-            fontWeight: 500,
-            marginBottom: 4
+            fontWeight: "600",
+            color: "#475569",
+            marginBottom: 6,
         },
         input:{
+            backgroundColor: "#f8fafc",
             borderWidth: 1,
-            borderColor: "#d1d5db",
-            borderRadius: 8,
-            backgroundColor: "#fff",
-            padding: 15,
-            marginBottom: 12
+            borderColor: "#e2e8f0",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            color: "#1e293b",
         },
         card:{
             backgroundColor: "#fff",
