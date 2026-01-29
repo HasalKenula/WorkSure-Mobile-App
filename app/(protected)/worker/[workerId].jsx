@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,13 +10,12 @@ import {
   RefreshControl,
   Alert,
 } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { useAuth } from "../../../context/AuthContext";
 import DefaultAvatar from "../../../assets/default-user.png";
 import { Ionicons, FontAwesome, MaterialIcons, Feather, AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
-import { set } from "date-fns";
 
 export default function WorkerProfileScreen() {
   const { jwtToken } = useAuth();
@@ -72,11 +71,11 @@ export default function WorkerProfileScreen() {
   const fetchRatings = useCallback(async () => {
     if (!workerId || !jwtToken) return;
     try {
-      const res = await api.get(`/ratings/worker/${workerId}`, {
+      const res = await api.get(`/rating/${workerId}`, {
         headers: { Authorization: `Bearer ${jwtToken}` },
       });
 
-      setRatings(res.data);
+      setRatings(res.data.ratings || []);
       setAverageRating(res.data.average || 0);
     }catch (err) {
       console.log("Error fetching ratings:", err);
@@ -99,11 +98,10 @@ export default function WorkerProfileScreen() {
 
 
   // Refresh when navigating back from feedback
-  useEffect(
+  useFocusEffect(
     useCallback(() => {
-        //fetchWorker();
-        fetchRatings();
-      }, [fetchRatings])
+      fetchRatings();
+    }, [fetchRatings])
   );
 
   const onRefresh = useCallback(async () => {
@@ -127,10 +125,19 @@ export default function WorkerProfileScreen() {
   };
 
   // Calculate average rating
-  const calculateAverageRating = () => {
-    if (userRate.length === 0) return "0.0";
-    const total = userRate.reduce((sum, review) => sum + review.rating, 0);
-    return (total / userRate.length).toFixed(1);
+  // const calculateAverageRating = () => {
+  //   if (userRate.length === 0) return "0.0";
+  //   const total = userRate.reduce((sum, review) => sum + review.rating, 0);
+  //   return (total / userRate.length).toFixed(1);
+  // };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   if (loading) return (
@@ -180,7 +187,7 @@ export default function WorkerProfileScreen() {
             {/* Rating Badge */}
             <View style={styles.ratingBadge}>
               <FontAwesome name="star" size={14} color="#FFD700" />
-              <Text style={styles.ratingText}>{calculateAverageRating()} • {userRate.length} reviews</Text>
+              <Text style={styles.ratingText}>{averageRating.toFixed(1)} • {ratings.length} reviews</Text>
             </View>
           </View>
 
@@ -270,41 +277,56 @@ export default function WorkerProfileScreen() {
               <AntDesign name="star" size={20} color="#f59e0b" />
               <Text style={styles.cardTitle}>User Ratings</Text>
               <View style={styles.reviewCount}>
-                <Text style={styles.reviewCountText}>{userRate.length}</Text>
+                <Text style={styles.reviewCountText}>{ratings.length}</Text>
               </View>
             </View>
 
-            {userRate.map((user) => (
-              <View key={user.id} style={styles.reviewItem}>
-                <View style={styles.reviewHeader}>
-                  <View style={styles.reviewerAvatar}>
-                    <FontAwesome name="user" size={18} color="#666" />
+            {ratings.length > 0 ? (
+              ratings.map((rating) => (
+                <View key={rating.id} style={styles.reviewItem}>
+                  <View style={styles.reviewHeader}>
+                    <View style={styles.reviewerAvatar}>
+                      {rating.user?.imageUrl ? (
+                        <Image
+                          source={{ uri: rating.user.imageUrl }}
+                          style={{ width: 40, height: 40, borderRadius: 20 }}
+                        />
+                      ) : (
+                        <FontAwesome name="user" size={18} color="#666" />
+                      )}
+                    </View>
+                    <View style={styles.reviewerInfo}>
+                      <Text style={styles.reviewerName}>{rating.user?.name || "Anonymous"}</Text>
+                      <Text style={styles.reviewDate}>{formatDate(rating.createdAT)}</Text>
+                    </View> 
+                    <View style={styles.starsContainer}>
+                      {[...Array(5)].map((_, i) => (
+                        <FontAwesome
+                          key={i}
+                          name="star"
+                          size={14}
+                          color={i < rating.rating ? "#FFD700" : "#E0E0E0"}
+                        />
+                      ))}
+                    </View>
                   </View>
-                  <View style={styles.reviewerInfo}>
-                    <Text style={styles.reviewerName}>{user.name}</Text>
-                    <Text style={styles.reviewDate}>{user.date}</Text>
-                  </View>
-                  <View style={styles.starsContainer}>
-                    {[...Array(5)].map((_, i) => (
-                      <FontAwesome
-                        key={i}
-                        name="star"
-                        size={14}
-                        color={i < user.rating ? "#FFD700" : "#E0E0E0"}
-                      />
-                    ))}
-                  </View>
-                </View>
-                <Text style={styles.reviewMessage}>{user.message}</Text>
+                <Text style={styles.reviewMessage}>{rating.feedback}</Text>
               </View>
-            ))}
+            ))
+            ) : (
+              <View style={styles.noRatingsContainer}>
+                <FontAwesome name="star" size={40} color="#D0D0D0" />
+                <Text style={styles.noRatingsText}>No ratings yet</Text>
+                <Text style={styles.noRatingsSubtext}>Be the first to review this worker</Text>
+              </View>
+            )}
           </View>
 
           {/* Action Buttons */}
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
               style={styles.feedbackButton}
-              onPress={() => router.push(`/feedback/${worker.id}`)}
+              onPress={() => router.push(`/(protected)/feedback/${worker.id}`)}
             >
               <Feather name="message-square" size={18} color="#f59e0b" />
               <Text style={styles.feedbackButtonText}>Add Feedback</Text>
@@ -312,7 +334,7 @@ export default function WorkerProfileScreen() {
 
             <TouchableOpacity
               style={styles.hireButton}
-              onPress={() => router.push(`/hire/${worker.id}`)}
+              onPress={() => router.push(`/(protected)/hire/${worker.id}`)}
             >
               <MaterialIcons name="work" size={18} color="#fff" />
               <Text style={styles.hireButtonText}>Hire Now</Text>
@@ -664,6 +686,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
     lineHeight: 20,
+  },
+  noRatingsContainer: {
+    alignItems: "center",
+    paddingVertical: 24,
+  },
+  noRatingsText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#999",
+    marginTop: 12,
+  },
+  noRatingsSubtext: {
+    fontSize: 13,
+    color: "#BBB",
+    marginTop: 4,
   },
   buttonsContainer: {
     flexDirection: "row",
