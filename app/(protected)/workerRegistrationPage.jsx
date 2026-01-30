@@ -183,6 +183,10 @@ export default function WorkerRegistartion(){
         }
 };
 
+    const palnUpgrade = () => {
+        router.push("/upgradePlan");
+    }
+
 
     return(
         <View style={styles.container}>
@@ -460,6 +464,10 @@ export default function WorkerRegistartion(){
 
                 <Pressable style={styles.submitButton} onPress={handleSubmit}>
                           <Text style={styles.submitButtonText}>Register Account</Text>
+                </Pressable>
+
+                <Pressable style={styles.submitButton} onPress={palnUpgrade}>
+                          <Text style={styles.submitButtonText}>Go to Payment</Text>
                 </Pressable>
                 
                 <Toast/>
