@@ -24,7 +24,6 @@ export default function UpgradePlanScreen() {
       return;
     }
 
-    // 🔐 SECURE PLACE TO CALL PAYMENT API LATER
     Toast.show({
       type: "info",
       text1: `${plan} plan selected`,
@@ -108,7 +107,7 @@ export default function UpgradePlanScreen() {
           price="Rs.8000"
           duration="Valid for 1 Year"
           features={[
-           "Can view Workers",
+            "Can view Workers",
             "Can send a request to worker",
             "Can hire workers",
             "Can add review for them",
@@ -116,6 +115,7 @@ export default function UpgradePlanScreen() {
             "Can do the payment transactions within the app",
             "Can get the Client requests and can approve them",
           ]}
+          pro
           buttonText="Get Pro"
           onPress={() => handleUpgrade("PRO")}
         />
@@ -138,9 +138,19 @@ function PlanCard({
   disabled,
   highlight,
   badge,
+  pro,
 }) {
   return (
-    <View style={[styles.card, highlight && styles.highlightCard]}>
+    <View
+      style={[
+        styles.card,
+        title === "Free" && styles.freeCard,
+        title === "Go" && styles.goCard,
+        title === "Plus" && styles.plusCard,
+        title === "Pro" && styles.proCard,
+        pro && styles.proGlow,
+      ]}
+    >
       {badge && (
         <View style={styles.badge}>
           <Text style={styles.badgeText}>{badge}</Text>
@@ -163,6 +173,9 @@ function PlanCard({
       <Pressable
         style={[
           styles.button,
+          title === "Go" && styles.goButton,
+          title === "Plus" && styles.plusButton,
+          title === "Pro" && styles.proButton,
           disabled && styles.disabledBtn,
         ]}
         disabled={disabled}
@@ -181,6 +194,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f8fafc",
   },
+
+  /* HEADER */
   header: {
     backgroundColor: "#f59e0b",
     paddingTop: 60,
@@ -204,26 +219,50 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.9)",
     marginTop: 6,
   },
+
   scroll: {
     padding: 20,
     paddingBottom: 40,
   },
+
+  /* CARD BASE */
   card: {
-    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#f1f5f9",
+    borderWidth: 2,
     shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
   },
-  highlightCard: {
-    borderColor: "#f59e0b",
+
+  /* PLAN COLORS */
+  freeCard: {
+    backgroundColor: "#ffffff",
+    borderColor: "#e5e7eb",
+  },
+  goCard: {
+    backgroundColor: "#eff6ff",
+    borderColor: "#93c5fd",
+  },
+  plusCard: {
     backgroundColor: "#fff7ed",
+    borderColor: "#f59e0b",
   },
+  proCard: {
+    backgroundColor: "#faf5ff",
+    borderColor: "#c084fc",
+  },
+
+  /* 🔥 PRO GLOW EFFECT */
+  proGlow: {
+    shadowColor: "#a855f7",
+    shadowOpacity: 0.5,
+    shadowRadius: 18,
+    elevation: 12,
+  },
+
   badge: {
     alignSelf: "center",
     backgroundColor: "#f59e0b",
@@ -237,6 +276,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 12,
   },
+
   planTitle: {
     fontSize: 22,
     fontWeight: "bold",
@@ -255,6 +295,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     color: "#1e293b",
   },
+
   features: {
     marginVertical: 10,
   },
@@ -268,12 +309,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#334155",
   },
+
+  /* BUTTONS */
   button: {
-    backgroundColor: "#f59e0b",
     paddingVertical: 14,
     borderRadius: 14,
     alignItems: "center",
     marginTop: 10,
+  },
+  goButton: {
+    backgroundColor: "#f59e0b",
+  },
+  plusButton: {
+    backgroundColor: "#f59e0b",
+  },
+  proButton: {
+    backgroundColor: "#f59e0b",
   },
   disabledBtn: {
     backgroundColor: "#e5e7eb",
