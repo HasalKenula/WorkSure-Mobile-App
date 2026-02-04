@@ -1,16 +1,52 @@
-import React, { useState } from 'react'
+import React, { useState , useEffect} from 'react'
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {useLocalSearchParams} from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
+import { useAuth } from '../../context/AuthContext';
+import Toast from "react-native-toast-message";
+import api from '../services/api';
 
 
 export default function PaymetPage(){
-
+  const router = useRouter();
   const { planName = "N/A", planPrice = 0 } = useLocalSearchParams();
+  const {jwtToken} = useAuth();
 
   const [fullname, setFullname] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState(null);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${jwtToken}`,
+    }
+  };
+
+  
+  
+  
+
+  const createPayment = async()=>{
+    try{
+      await api.post(
+        "/payment",
+        {
+          name: fullname,
+          email,
+          address,
+          amount: Math.round(planPrice * 1.08),
+          planName,
+          userId
+        },
+        config
+      );
+      Toast.show({ type: "success", text1: "Payment successful" });
+      router.replace("/");
+    }catch(err){
+      Toast.show({ type: "error", text1: "Payment failed" });
+    }
+  };
 
 
   return (
@@ -80,7 +116,7 @@ export default function PaymetPage(){
         </View>
 
         {/* confirm button */}
-        <TouchableOpacity style={Styles.paybtn}>
+        <TouchableOpacity style={Styles.paybtn} onPress={createPayment}>
           <Text style={Styles.paytext}>Confirm Payment</Text>
         </TouchableOpacity>
         
@@ -151,7 +187,7 @@ const Styles = StyleSheet.create({
   },
   paytext: {
     color: "#fff",
-    fontSize: "16",
+    fontSize: 16,
     fontWeight: "bold"
   },
   paybtn: {
