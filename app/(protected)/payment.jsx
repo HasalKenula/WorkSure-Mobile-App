@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {useLocalSearchParams} from "expo-router";
 
@@ -63,13 +63,38 @@ export default function PaymetPage(){
             <TextInput style={[Styles.input, {flex:1}]} placeholder='MM/YY'/>
             <TextInput style={[Styles.input, {flex:1}]} placeholder='CVC'/>
           </View>
-
-          {/* order summary */}
-
-          
         </View>
+
+        {/* order summary */}
+
+        <View style={Styles.card}>
+
+          <Text style={Styles.sectionTitle}>Order Summary</Text>
+
+          <SummaryRow label="Plan" value={planName}/>
+          <SummaryRow label="Service Fee" value={`Rs. ${planPrice}`}/>
+          <SummaryRow label="Tax (8%)" value={`Rs. ${(planPrice * 0.08).toFixed(2)}`}/>
+
+          <View style={Styles.divider}/>
+          <SummaryRow label="Total" value={`Rs. ${(planPrice * 1.08).toFixed(2)}`} bold/>
+        </View>
+
+        {/* confirm button */}
+        <TouchableOpacity style={Styles.paybtn}>
+          <Text style={Styles.paytext}>Confirm Payment</Text>
+        </TouchableOpacity>
+        
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function SummaryRow({label, value, bold}){
+  return(
+    <View style={Styles.row}>
+      <Text style={[Styles.rowText, bold && {fontWeight: "bold"}]}>{label}</Text>
+      <Text style={[Styles.rowText, bold && {fontWeight: "bold"}]}>{value}</Text>
+    </View>
   );
 }
 
@@ -110,5 +135,33 @@ const Styles = StyleSheet.create({
     padding: 14,
     marginBottom: 12,
     backgroundColor: "#FFF7ED"
+  },
+  row : {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 6
+  },
+  rowText : {
+    color: "#374151"
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+    marginVertical: 10
+  },
+  paytext: {
+    color: "#fff",
+    fontSize: "16",
+    fontWeight: "bold"
+  },
+  paybtn: {
+    flexDirection: "row",
+    backgroundColor: "#F59E0B",
+    padding: 16,
+    borderRadius: 14,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 40,
   }
 });
