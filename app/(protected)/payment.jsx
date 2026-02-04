@@ -23,7 +23,21 @@ export default function PaymetPage(){
     }
   };
 
-  
+  useEffect(() => {
+    if (!jwtToken) return;
+
+    api
+      .get("/user", config)
+      .then((res) => {
+        setFullname(res.data.name);
+        setEmail(res.data.email);
+        setAddress(res.data.address);
+        setUserId(res.data.id);
+      })
+      .catch(() => {
+        Toast.show({ type: "error", text1: "Failed to load user" });
+      });
+  }, [jwtToken]);
   
   
 
