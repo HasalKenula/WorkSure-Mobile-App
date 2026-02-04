@@ -923,7 +923,7 @@ export default function WorkerDashboardScreen() {
         text2: "You are already registered as a worker",
       });
     } else if (worker) {
-      router.push("/planUpgradePage");
+      router.push("/upgradePlan");
     } else {
       router.push("/workerRegistrationPage");
     }
