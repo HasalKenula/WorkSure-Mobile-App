@@ -925,7 +925,7 @@ export default function WorkerDashboardScreen() {
     } else if (worker) {
       router.push("/planUpgradePage");
     } else {
-      router.push("/workerRegistration");
+      router.push("/workerRegistrationPage");
     }
     setModalVisible(false);
   };
