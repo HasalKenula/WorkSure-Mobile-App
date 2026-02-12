@@ -36,9 +36,11 @@ export default function UpgradePlanScreen() {
       {/* HEADER */}
       <View style={styles.header}>
         <Pressable style={styles.backBtn} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Text style={styles.backText}>{"<"}</Text>
         </Pressable>
+
         <Text style={styles.headerTitle}>Upgrade Your Plan</Text>
+
         <Text style={styles.headerSub}>
           Choose the best plan for your work
         </Text>
@@ -195,25 +197,51 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8fafc",
   },
 
+  backText: {
+    fontSize: 28,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+
   /* HEADER */
-  header: {
-    backgroundColor: "#f59e0b",
-    paddingTop: 60,
-    paddingBottom: 30,
-    paddingHorizontal: 20,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-  },
-  backBtn: {
-    position: "absolute",
-    top: 45,
-    left: 20,
-  },
+  /* HEADER */
+header: {
+  backgroundColor: "#f59e0b",
+  paddingTop: 70,
+  paddingBottom: 30,
+  paddingHorizontal: 20,
+  borderBottomLeftRadius: 30,
+  borderBottomRightRadius: 30,
+  alignItems: "center",   // 👈 center title
+},
+
+backBtn: {
+  position: "absolute",
+  top: 60,
+  left: 20,
+  width: 45,
+  height: 45,
+  borderRadius: 22.5,
+  backgroundColor: "rgba(255,255,255,0.2)",  // soft glass look
+  justifyContent: "center",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "rgba(255,255,255,0.4)",
+},
+
+backText: {
+  fontSize: 22,
+  color: "#fff",
+  fontWeight: "bold",
+},
+
+
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#fff",
   },
+
   headerSub: {
     fontSize: 16,
     color: "rgba(255,255,255,0.9)",
@@ -225,7 +253,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
 
-  /* CARD BASE */
   card: {
     borderRadius: 20,
     padding: 20,
@@ -237,25 +264,26 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 
-  /* PLAN COLORS */
   freeCard: {
     backgroundColor: "#ffffff",
     borderColor: "#e5e7eb",
   },
+
   goCard: {
     backgroundColor: "#eff6ff",
     borderColor: "#93c5fd",
   },
+
   plusCard: {
     backgroundColor: "#fff7ed",
     borderColor: "#f59e0b",
   },
+
   proCard: {
     backgroundColor: "#faf5ff",
     borderColor: "#c084fc",
   },
 
-  /* 🔥 PRO GLOW EFFECT */
   proGlow: {
     shadowColor: "#a855f7",
     shadowOpacity: 0.5,
@@ -271,6 +299,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 10,
   },
+
   badgeText: {
     color: "#fff",
     fontWeight: "bold",
@@ -282,12 +311,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
+
   duration: {
     fontSize: 14,
     color: "#64748b",
     textAlign: "center",
     marginTop: 4,
   },
+
   price: {
     fontSize: 28,
     fontWeight: "bold",
@@ -299,36 +330,42 @@ const styles = StyleSheet.create({
   features: {
     marginVertical: 10,
   },
+
   featureRow: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
   },
+
   featureText: {
     marginLeft: 8,
     fontSize: 14,
     color: "#334155",
   },
 
-  /* BUTTONS */
   button: {
     paddingVertical: 14,
     borderRadius: 14,
     alignItems: "center",
     marginTop: 10,
   },
+
   goButton: {
     backgroundColor: "#f59e0b",
   },
+
   plusButton: {
     backgroundColor: "#f59e0b",
   },
+
   proButton: {
     backgroundColor: "#f59e0b",
   },
+
   disabledBtn: {
     backgroundColor: "#e5e7eb",
   },
+
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
