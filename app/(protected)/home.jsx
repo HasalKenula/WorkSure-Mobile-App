@@ -62,6 +62,10 @@ export default function HomeScreen() {
       <TouchableOpacity style={[styles.button, { marginTop: 20 }]} onPress={handleLogout}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.button, { marginTop: 20 }]} onPress={() => router.push("/upgrade/UpgradePlanScreen")}>
+        <Text style={styles.buttonText}>Upgrade</Text>
+      </TouchableOpacity>
     </View>
   );
 }
