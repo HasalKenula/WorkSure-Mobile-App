@@ -29,6 +29,34 @@ export default function UpgradePlanScreen() {
       text1: `${plan} plan selected`,
       text2: "Payment flow goes here",
     });
+
+    if(plan == "GO"){
+      router.push({
+      pathname: "/payment",
+      params: {
+        planName: "Go",
+        planPrice: 2000,
+      },
+      });
+    }
+    if(plan == "PLUS"){
+      router.push({
+      pathname: "/payment",
+      params: {
+        planName: "Plus",
+        planPrice: 4000,
+      },
+      });
+    }
+    if(plan == "PRO"){
+      router.push({
+      pathname: "/payment",
+      params: {
+        planName: "Pro",
+        planPrice: 8000,
+      },
+      });
+    }
   };
 
   return (
