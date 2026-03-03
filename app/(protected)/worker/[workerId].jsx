@@ -95,178 +95,183 @@ export default function WorkerProfileScreen() {
   );
 
   return (
-   // <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    // <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
 
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Header with Gradient Background */}
-        <View style={styles.header}>
-          <View style={styles.headerBackground} />
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Header with Gradient Background */}
+      <View style={styles.header}>
+        <View style={styles.headerBackground} />
 
-          {/* Back Button */}
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color="#fff" />
+        {/* Back Button */}
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+
+        {/* Profile Image Container */}
+        <View style={styles.profileImageContainer}>
+          <Image
+            source={
+              worker.user?.imageUrl && !imageError
+                ? { uri: worker.user.imageUrl }
+                : DefaultAvatar
+            }
+            style={styles.avatar}
+            onError={() => setImageError(true)}
+          />
+          <View style={styles.onlineIndicator} />
+        </View>
+      </View>
+
+      {/* Profile Content */}
+      <View style={styles.content}>
+        {/* Name and Role */}
+        <View style={styles.nameContainer}>
+          <Text style={styles.name}>{worker.fullName}</Text>
+          <Text style={styles.role}>{worker.jobRole}</Text>
+
+          {/* Rating Badge */}
+          <View style={styles.ratingBadge}>
+            <FontAwesome name="star" size={14} color="#FFD700" />
+            <Text style={styles.ratingText}>{calculateAverageRating()} • {userRate.length} reviews</Text>
+          </View>
+        </View>
+
+        {/* Location Card */}
+        <View style={styles.locationCard}>
+          <Ionicons name="location-sharp" size={20} color="#f59e0b" />
+          <View style={styles.locationTextContainer}>
+            <Text style={styles.locationLabel}>Location</Text>
+            <Text style={styles.locationText}>{worker.address}</Text>
+          </View>
+        </View>
+
+        {/* Working Area Card */}
+        <View style={styles.infoCard}>
+          <View style={styles.cardHeader}>
+            <Feather name="map-pin" size={20} color="#f59e0b" />
+            <Text style={styles.cardTitle}>Working Area</Text>
+          </View>
+          <Text style={styles.cardContent}>{worker.preferredServiceLocation}</Text>
+        </View>
+
+        {/* Working Schedule */}
+        <View style={styles.infoCard}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="time" size={20} color="#f59e0b" />
+            <Text style={styles.cardTitle}>Working Schedule</Text>
+          </View>
+          {getWorkingDays(worker).map((day, i) => (
+            <View key={i} style={styles.scheduleItem}>
+              <View style={styles.dayDot} />
+              <Text style={styles.scheduleDay}>{day}</Text>
+              <Text style={styles.scheduleTime}>
+                {worker.preferredStartTime} to {worker.preferredEndTime}
+              </Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Certifications */}
+        {worker.certificates?.length > 0 && (
+          <View style={styles.infoCard}>
+            <View style={styles.cardHeader}>
+              <MaterialIcons name="verified" size={20} color="#f59e0b" />
+              <Text style={styles.cardTitle}>Certifications</Text>
+            </View>
+            {worker.certificates.map((c, i) => (
+              <View key={i} style={styles.certificateItem}>
+                <View style={styles.certIcon}>
+                  <FontAwesome5 name="award" size={16} color="#f59e0b" />
+                </View>
+                <View style={styles.certContent}>
+                  <Text style={styles.certName}>{c.certificateName}</Text>
+                  <Text style={styles.certBody}>{c.issuingBody}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Job Experience */}
+        {worker.jobExperiences?.length > 0 && (
+          <View style={styles.infoCard}>
+            <View style={styles.cardHeader}>
+              <FontAwesome5 name="briefcase" size={18} color="#f59e0b" />
+              <Text style={styles.cardTitle}>Job Experience</Text>
+            </View>
+            {worker.jobExperiences.map((exp, i) => (
+              <View key={i} style={styles.experienceItem}>
+                <View style={styles.experienceHeader}>
+                  <Text style={styles.experienceTitle}>{exp.jobTitle}</Text>
+                  <View style={styles.experienceYears}>
+                    <Text style={styles.yearsText}>{exp.years} years</Text>
+                  </View>
+                </View>
+                <View style={styles.companyRow}>
+                  <Feather name="briefcase" size={14} color="#666" />
+                  <Text style={styles.companyText}>{exp.companyName}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* User Ratings */}
+        <View style={styles.infoCard}>
+          <View style={styles.cardHeader}>
+            <AntDesign name="star" size={20} color="#f59e0b" />
+            <Text style={styles.cardTitle}>User Ratings</Text>
+            <View style={styles.reviewCount}>
+              <Text style={styles.reviewCountText}>{userRate.length}</Text>
+            </View>
+          </View>
+
+          {userRate.map((user) => (
+            <View key={user.id} style={styles.reviewItem}>
+              <View style={styles.reviewHeader}>
+                <View style={styles.reviewerAvatar}>
+                  <FontAwesome name="user" size={18} color="#666" />
+                </View>
+                <View style={styles.reviewerInfo}>
+                  <Text style={styles.reviewerName}>{user.name}</Text>
+                  <Text style={styles.reviewDate}>{user.date}</Text>
+                </View>
+                <View style={styles.starsContainer}>
+                  {[...Array(5)].map((_, i) => (
+                    <FontAwesome
+                      key={i}
+                      name="star"
+                      size={14}
+                      color={i < user.rating ? "#FFD700" : "#E0E0E0"}
+                    />
+                  ))}
+                </View>
+              </View>
+              <Text style={styles.reviewMessage}>{user.message}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.feedbackButton}
+            onPress={() => router.push(`/feedback/${worker.id}`)}
+          >
+            <Feather name="message-square" size={18} color="#f59e0b" />
+            <Text style={styles.feedbackButtonText}>Add Feedback</Text>
           </TouchableOpacity>
 
-          {/* Profile Image Container */}
-          <View style={styles.profileImageContainer}>
-            <Image
-              source={{ uri: worker.user?.imageUrl || DefaultAvatar }}
-              style={styles.avatar}
-            />
-            <View style={styles.onlineIndicator} />
-          </View>
+          <TouchableOpacity
+            style={styles.hireButton}
+            onPress={() => router.push(`/hire/${worker.id}`)}
+          >
+            <MaterialIcons name="work" size={18} color="#fff" />
+            <Text style={styles.hireButtonText}>Hire Now</Text>
+          </TouchableOpacity>
         </View>
-
-        {/* Profile Content */}
-        <View style={styles.content}>
-          {/* Name and Role */}
-          <View style={styles.nameContainer}>
-            <Text style={styles.name}>{worker.fullName}</Text>
-            <Text style={styles.role}>{worker.jobRole}</Text>
-
-            {/* Rating Badge */}
-            <View style={styles.ratingBadge}>
-              <FontAwesome name="star" size={14} color="#FFD700" />
-              <Text style={styles.ratingText}>{calculateAverageRating()} • {userRate.length} reviews</Text>
-            </View>
-          </View>
-
-          {/* Location Card */}
-          <View style={styles.locationCard}>
-            <Ionicons name="location-sharp" size={20} color="#f59e0b" />
-            <View style={styles.locationTextContainer}>
-              <Text style={styles.locationLabel}>Location</Text>
-              <Text style={styles.locationText}>{worker.address}</Text>
-            </View>
-          </View>
-
-          {/* Working Area Card */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Feather name="map-pin" size={20} color="#f59e0b" />
-              <Text style={styles.cardTitle}>Working Area</Text>
-            </View>
-            <Text style={styles.cardContent}>{worker.preferredServiceLocation}</Text>
-          </View>
-
-          {/* Working Schedule */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <Ionicons name="time" size={20} color="#f59e0b" />
-              <Text style={styles.cardTitle}>Working Schedule</Text>
-            </View>
-            {getWorkingDays(worker).map((day, i) => (
-              <View key={i} style={styles.scheduleItem}>
-                <View style={styles.dayDot} />
-                <Text style={styles.scheduleDay}>{day}</Text>
-                <Text style={styles.scheduleTime}>
-                  {worker.preferredStartTime} to {worker.preferredEndTime}
-                </Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Certifications */}
-          {worker.certificates?.length > 0 && (
-            <View style={styles.infoCard}>
-              <View style={styles.cardHeader}>
-                <MaterialIcons name="verified" size={20} color="#f59e0b" />
-                <Text style={styles.cardTitle}>Certifications</Text>
-              </View>
-              {worker.certificates.map((c, i) => (
-                <View key={i} style={styles.certificateItem}>
-                  <View style={styles.certIcon}>
-                    <FontAwesome5 name="award" size={16} color="#f59e0b" />
-                  </View>
-                  <View style={styles.certContent}>
-                    <Text style={styles.certName}>{c.certificateName}</Text>
-                    <Text style={styles.certBody}>{c.issuingBody}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* Job Experience */}
-          {worker.jobExperiences?.length > 0 && (
-            <View style={styles.infoCard}>
-              <View style={styles.cardHeader}>
-                <FontAwesome5 name="briefcase" size={18} color="#f59e0b" />
-                <Text style={styles.cardTitle}>Job Experience</Text>
-              </View>
-              {worker.jobExperiences.map((exp, i) => (
-                <View key={i} style={styles.experienceItem}>
-                  <View style={styles.experienceHeader}>
-                    <Text style={styles.experienceTitle}>{exp.jobTitle}</Text>
-                    <View style={styles.experienceYears}>
-                      <Text style={styles.yearsText}>{exp.years} years</Text>
-                    </View>
-                  </View>
-                  <View style={styles.companyRow}>
-                    <Feather name="briefcase" size={14} color="#666" />
-                    <Text style={styles.companyText}>{exp.companyName}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* User Ratings */}
-          <View style={styles.infoCard}>
-            <View style={styles.cardHeader}>
-              <AntDesign name="star" size={20} color="#f59e0b" />
-              <Text style={styles.cardTitle}>User Ratings</Text>
-              <View style={styles.reviewCount}>
-                <Text style={styles.reviewCountText}>{userRate.length}</Text>
-              </View>
-            </View>
-
-            {userRate.map((user) => (
-              <View key={user.id} style={styles.reviewItem}>
-                <View style={styles.reviewHeader}>
-                  <View style={styles.reviewerAvatar}>
-                    <FontAwesome name="user" size={18} color="#666" />
-                  </View>
-                  <View style={styles.reviewerInfo}>
-                    <Text style={styles.reviewerName}>{user.name}</Text>
-                    <Text style={styles.reviewDate}>{user.date}</Text>
-                  </View>
-                  <View style={styles.starsContainer}>
-                    {[...Array(5)].map((_, i) => (
-                      <FontAwesome
-                        key={i}
-                        name="star"
-                        size={14}
-                        color={i < user.rating ? "#FFD700" : "#E0E0E0"}
-                      />
-                    ))}
-                  </View>
-                </View>
-                <Text style={styles.reviewMessage}>{user.message}</Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Action Buttons */}
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity
-              style={styles.feedbackButton}
-              onPress={() => router.push(`/feedback/${worker.id}`)}
-            >
-              <Feather name="message-square" size={18} color="#f59e0b" />
-              <Text style={styles.feedbackButtonText}>Add Feedback</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.hireButton}
-              onPress={() => router.push(`/hire/${worker.id}`)}
-            >
-              <MaterialIcons name="work" size={18} color="#fff" />
-              <Text style={styles.hireButtonText}>Hire Now</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
+      </View>
+    </ScrollView>
     //</SafeAreaView>
   );
 }
