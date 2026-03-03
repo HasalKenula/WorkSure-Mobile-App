@@ -17,6 +17,7 @@ import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
 import { StatusBar } from "expo-status-bar";
+import defaultUser from "../../assets/default-user.png";
 
 export default function WorkersScreen() {
   const [workers, setWorkers] = useState([]);
@@ -63,35 +64,28 @@ export default function WorkersScreen() {
   const renderAvatar = (worker) => {
     const hasImage = worker.user?.imageUrl && !imageErrorIds[worker.id];
 
-    if (hasImage) {
-      return (
-        <View style={styles.avatarContainer}>
-          <Image
-            source={{ uri: worker.user.imageUrl }}
-            style={styles.avatar}
-            onError={() =>
-              setImageErrorIds((prev) => ({ ...prev, [worker.id]: true }))
-            }
-          />
-          <View style={[
-            styles.statusIndicator,
-            worker.status === "Free" ? styles.indicatorFree : styles.indicatorBusy
-          ]} />
-        </View>
-      );
-    }
-
-    const initial = worker.fullName ? worker.fullName.charAt(0).toUpperCase() : "?";
-
     return (
-      <View style={styles.fallbackAvatarContainer}>
-        <View style={styles.fallbackAvatar}>
-          <Text style={styles.initial}>{initial}</Text>
-        </View>
-        <View style={[
-          styles.statusIndicator,
-          worker.status === "Free" ? styles.indicatorFree : styles.indicatorBusy
-        ]} />
+      <View style={styles.avatarContainer}>
+        <Image
+          source={
+            hasImage
+              ? { uri: worker.user.imageUrl }
+              : defaultUser
+          }
+          style={styles.avatar}
+          onError={() =>
+            setImageErrorIds((prev) => ({ ...prev, [worker.id]: true }))
+          }
+        />
+
+        <View
+          style={[
+            styles.statusIndicator,
+            worker.status === "Free"
+              ? styles.indicatorFree
+              : styles.indicatorBusy,
+          ]}
+        />
       </View>
     );
   };
