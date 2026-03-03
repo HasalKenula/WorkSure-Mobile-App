@@ -95,7 +95,7 @@ export default function WorkerProfileScreen() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+   // <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
 
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header with Gradient Background */}
@@ -267,7 +267,7 @@ export default function WorkerProfileScreen() {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    //</SafeAreaView>
   );
 }
 
