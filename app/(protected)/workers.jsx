@@ -16,6 +16,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
+import { StatusBar } from "expo-status-bar";
 
 export default function WorkersScreen() {
   const [workers, setWorkers] = useState([]);
@@ -163,58 +164,58 @@ export default function WorkersScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
-     
-        <View style={styles.container}>
-          {/* Header Section */}
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Find Workers</Text>
-            <Text style={styles.headerSubtitle}>
-              {filteredWorkers.length} professionals available
-            </Text>
-          </View>
-
-          {/*  Search Bar */}
-          <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="#94a3b8" style={styles.searchIcon} />
-            <TextInput
-              placeholder="Search workers by name..."
-              placeholderTextColor="#94a3b8"
-              value={searchText}
-              onChangeText={setSearchText}
-              style={styles.searchInput}
-            />
-            {searchText.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchText("")} style={styles.clearButton}>
-                <Ionicons name="close-circle" size={18} color="#94a3b8" />
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Results Info */}
-          <View style={styles.resultsInfo}>
-            <Text style={styles.resultsText}>
-              Showing {filteredWorkers.length} workers
-            </Text>
-          </View>
-
-          <FlatList
-            data={filteredWorkers}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderWorker}
-            contentContainerStyle={styles.list}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <View style={styles.emptyState}>
-                <Ionicons name="people-outline" size={60} color="#e2e8f0" />
-                <Text style={styles.emptyTitle}>No workers found</Text>
-                <Text style={styles.emptyText}>
-                  {searchText ? "Try a different search term" : "No workers available"}
-                </Text>
-              </View>
-            }
-          />
+      <StatusBar style="dark" />
+      <View style={styles.container}>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Find Workers</Text>
+          <Text style={styles.headerSubtitle}>
+            {filteredWorkers.length} professionals available
+          </Text>
         </View>
-      
+
+        {/*  Search Bar */}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color="#94a3b8" style={styles.searchIcon} />
+          <TextInput
+            placeholder="Search workers by name..."
+            placeholderTextColor="#94a3b8"
+            value={searchText}
+            onChangeText={setSearchText}
+            style={styles.searchInput}
+          />
+          {searchText.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchText("")} style={styles.clearButton}>
+              <Ionicons name="close-circle" size={18} color="#94a3b8" />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Results Info */}
+        <View style={styles.resultsInfo}>
+          <Text style={styles.resultsText}>
+            Showing {filteredWorkers.length} workers
+          </Text>
+        </View>
+
+        <FlatList
+          data={filteredWorkers}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderWorker}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <View style={styles.emptyState}>
+              <Ionicons name="people-outline" size={60} color="#e2e8f0" />
+              <Text style={styles.emptyTitle}>No workers found</Text>
+              <Text style={styles.emptyText}>
+                {searchText ? "Try a different search term" : "No workers available"}
+              </Text>
+            </View>
+          }
+        />
+      </View>
+
     </SafeAreaView>
   );
 }
