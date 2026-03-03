@@ -12,8 +12,8 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { useAuth } from "../../../context/AuthContext";
 import DefaultAvatar from "../../../assets/default-user.png";
 import { Ionicons, FontAwesome, MaterialIcons, Feather, AntDesign, FontAwesome5 } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
+
 export default function WorkerProfileScreen() {
   const { jwtToken } = useAuth();
   const router = useRouter();
@@ -21,6 +21,7 @@ export default function WorkerProfileScreen() {
 
   const [worker, setWorker] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
 
   // mock user ratings
   const userRate = [
