@@ -17,7 +17,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { Ionicons, MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
-
+import DefaultAvatar from "../../../assets/default-user.png";
 
 export default function WorkerHire() {
   const { workerId } = useLocalSearchParams();
@@ -33,6 +33,7 @@ export default function WorkerHire() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const config = {
     headers: { Authorization: `Bearer ${jwtToken}` },
@@ -49,12 +50,24 @@ export default function WorkerHire() {
   }, [jwtToken]);
 
   /* ---------------- FETCH WORKER ---------------- */
+  // useEffect(() => {
+  //   if (!workerId) return;
+
+  //   api
+  //     .get(`/worker/id/${workerId}`, config)
+  //     .then(res => setWorker(res.data))
+  //     .catch(err => console.log("Worker load error:", err));
+  // }, [workerId]);
+
   useEffect(() => {
     if (!workerId) return;
 
     api
       .get(`/worker/id/${workerId}`, config)
-      .then(res => setWorker(res.data))
+      .then(res => {
+        setWorker(res.data);
+        setImageError(false); // reset error
+      })
       .catch(err => console.log("Worker load error:", err));
   }, [workerId]);
 
@@ -178,12 +191,13 @@ export default function WorkerHire() {
         <View style={styles.workerCard}>
           <View style={styles.workerHeader}>
             <Image
-              source={{
-                uri:
-                  worker?.user?.imageUrl ||
-                  "https://via.placeholder.com/150",
-              }}
+              source={
+                worker?.user?.imageUrl && !imageError
+                  ? { uri: worker.user.imageUrl }
+                  : DefaultAvatar
+              }
               style={styles.avatar}
+              onError={() => setImageError(true)}
             />
             <View style={styles.workerInfo}>
               <Text style={styles.name}>{worker?.fullName}</Text>
