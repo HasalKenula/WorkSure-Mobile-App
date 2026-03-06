@@ -3,6 +3,8 @@ import {
     View,
     Text,
     Image,
+    TextInput,
+    TouchableOpacity,
     ScrollView,
     StyleSheet,
     ActivityIndicator,
@@ -142,6 +144,16 @@ export default function UserFeedbackScreen() {
                 ))}
             </View>
 
+            {/* Feedback */}
+            <Text style={styles.label}>Detailed Feedback</Text>
+
+            <TextInput
+                style={styles.textArea}
+                multiline
+                placeholder="Write your feedback..."
+                value={feedback}
+                onChangeText={setFeedback}
+            />
 
 
 
@@ -201,5 +213,13 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
 
+    textArea: {
+        borderWidth: 1,
+        borderColor: "#ddd",
+        borderRadius: 10,
+        padding: 10,
+        height: 120,
+        backgroundColor: "#fff"
+    },
 
 });
