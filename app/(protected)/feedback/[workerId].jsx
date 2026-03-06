@@ -155,6 +155,24 @@ export default function UserFeedbackScreen() {
                 onChangeText={setFeedback}
             />
 
+            {/* Buttons */}
+            <View style={styles.buttonRow}>
+
+                <TouchableOpacity
+                    style={styles.cancelBtn}
+                    onPress={() => router.back()}
+                >
+                    <Text>Cancel</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.submitBtn}
+                    onPress={submitFeedback}
+                >
+                    <Text style={{ color: "#fff" }}>Submit</Text>
+                </TouchableOpacity>
+
+            </View>
 
 
 
@@ -220,6 +238,30 @@ const styles = StyleSheet.create({
         padding: 10,
         height: 120,
         backgroundColor: "#fff"
+    },
+
+    buttonRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginTop: 15
+    },
+
+
+    cancelBtn: {
+        padding: 10,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+        width: "40%",
+        alignItems: "center"
+    },
+
+    submitBtn: {
+        padding: 10,
+        backgroundColor: "#f59e0b",
+        borderRadius: 8,
+        width: "40%",
+        alignItems: "center"
     },
 
 });
