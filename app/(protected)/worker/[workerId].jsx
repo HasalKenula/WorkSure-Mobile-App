@@ -255,6 +255,7 @@ export default function WorkerProfileScreen() {
 
         {/* Action Buttons */}
         <View style={styles.buttonsContainer}>
+
           <TouchableOpacity
             style={styles.feedbackButton}
             onPress={() => router.push(`/feedback/${worker.id}`)}
