@@ -174,6 +174,49 @@ export default function UserFeedbackScreen() {
 
             </View>
 
+            {/* Past Reviews */}
+            <Text style={styles.subtitle}>Your Past Reviews</Text>
+
+            {reviews.map((review, index) => (
+                <View key={index} style={styles.reviewCard}>
+
+                    <View style={styles.reviewHeader}>
+
+                        <View style={styles.reviewUser}>
+
+                            {review.worker?.user?.imageUrl ? (
+                                <Image
+                                    source={{ uri: review.worker.user.imageUrl }}
+                                    style={styles.reviewAvatar}
+                                />
+                            ) : (
+                                <Ionicons name="person-circle" size={40} color="gray" />
+                            )}
+
+                            <Text style={styles.reviewName}>
+                                {review.worker?.fullName || "Anonymous"}
+                            </Text>
+
+                        </View>
+
+                        <Text style={styles.reviewDate}>
+                            {new Date(review.createdAT).toLocaleDateString()}
+                        </Text>
+
+                    </View>
+
+                    <View style={styles.starRowSmall}>
+                        {[...Array(review.rating)].map((_, i) => (
+                            <Ionicons key={i} name="star" size={18} color="#f59e0b" />
+                        ))}
+                    </View>
+
+                    <Text style={styles.reviewText}>
+                        {review.feedback}
+                    </Text>
+
+                </View>
+            ))}
 
 
         </ScrollView>
@@ -263,5 +306,57 @@ const styles = StyleSheet.create({
         width: "40%",
         alignItems: "center"
     },
+
+    subtitle: {
+        fontSize: 20,
+        fontWeight: "600",
+        marginTop: 30,
+        marginBottom: 10
+    },
+
+    reviewCard: {
+        backgroundColor: "#fff",
+        padding: 15,
+        borderRadius: 10,
+        marginBottom: 10
+    },
+
+    reviewHeader: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+
+    reviewUser: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10
+    },
+
+    reviewAvatar: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: "#f59e0b"
+    },
+
+    reviewName: {
+        fontWeight: "600"
+    },
+
+    reviewDate: {
+        fontSize: 12,
+        color: "gray"
+    },
+
+    starRowSmall: {
+        flexDirection: "row",
+        marginVertical: 5
+    },
+
+    reviewText: {
+        fontSize: 14
+    }
 
 });
