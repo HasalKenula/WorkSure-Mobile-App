@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import api from "../../services/api";
 import { useAuth } from "../../../context/AuthContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 export default function UserFeedbackScreen() {
 
@@ -111,115 +112,118 @@ export default function UserFeedbackScreen() {
     }
 
     return (
-        <ScrollView style={styles.container}>
+        <>
+            <StatusBar style="dark" />
+            <ScrollView style={styles.container}>
 
-            <Text style={styles.title}>Rate & Review</Text>
+                <Text style={styles.title}>Rate & Review</Text>
 
-            {/* Worker Info */}
-            <View style={styles.workerCard}>
-                {worker.user?.imageUrl ? (
-                    <Image
-                        source={{ uri: worker.user.imageUrl }}
-                        style={styles.avatar}
-                    />
-                ) : (
-                    <Ionicons name="person-circle" size={90} color="gray" />
-                )}
-
-                <Text style={styles.workerName}>{worker.fullName}</Text>
-            </View>
-
-            {/* Rating */}
-            <Text style={styles.label}>Your Rating</Text>
-
-            <View style={styles.starRow}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                    <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                        <Ionicons
-                            name={star <= rating ? "star" : "star-outline"}
-                            size={32}
-                            color="#f59e0b"
+                {/* Worker Info */}
+                <View style={styles.workerCard}>
+                    {worker.user?.imageUrl ? (
+                        <Image
+                            source={{ uri: worker.user.imageUrl }}
+                            style={styles.avatar}
                         />
+                    ) : (
+                        <Ionicons name="person-circle" size={90} color="gray" />
+                    )}
+
+                    <Text style={styles.workerName}>{worker.fullName}</Text>
+                </View>
+
+                {/* Rating */}
+                <Text style={styles.label}>Your Rating</Text>
+
+                <View style={styles.starRow}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                        <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                            <Ionicons
+                                name={star <= rating ? "star" : "star-outline"}
+                                size={32}
+                                color="#f59e0b"
+                            />
+                        </TouchableOpacity>
+                    ))}
+                </View>
+
+                {/* Feedback */}
+                <Text style={styles.label}>Detailed Feedback</Text>
+
+                <TextInput
+                    style={styles.textArea}
+                    multiline
+                    placeholder="Write your feedback..."
+                    value={feedback}
+                    onChangeText={setFeedback}
+                />
+
+                {/* Buttons */}
+                <View style={styles.buttonRow}>
+
+                    <TouchableOpacity
+                        style={styles.cancelBtn}
+                        onPress={() => router.back()}
+                    >
+                        <Text>Cancel</Text>
                     </TouchableOpacity>
-                ))}
-            </View>
 
-            {/* Feedback */}
-            <Text style={styles.label}>Detailed Feedback</Text>
+                    <TouchableOpacity
+                        style={styles.submitBtn}
+                        onPress={submitFeedback}
+                    >
+                        <Text style={{ color: "#fff" }}>Submit</Text>
+                    </TouchableOpacity>
 
-            <TextInput
-                style={styles.textArea}
-                multiline
-                placeholder="Write your feedback..."
-                value={feedback}
-                onChangeText={setFeedback}
-            />
+                </View>
 
-            {/* Buttons */}
-            <View style={styles.buttonRow}>
+                {/* Past Reviews */}
+                <View style={{ marginTop: 10, marginBottom: 80 }}>
+                    <Text style={styles.subtitle}>Your Past Reviews</Text>
 
-                <TouchableOpacity
-                    style={styles.cancelBtn}
-                    onPress={() => router.back()}
-                >
-                    <Text>Cancel</Text>
-                </TouchableOpacity>
+                    {reviews.map((review, index) => (
+                        <View key={index} style={styles.reviewCard}>
 
-                <TouchableOpacity
-                    style={styles.submitBtn}
-                    onPress={submitFeedback}
-                >
-                    <Text style={{ color: "#fff" }}>Submit</Text>
-                </TouchableOpacity>
+                            <View style={styles.reviewHeader}>
 
-            </View>
+                                <View style={styles.reviewUser}>
 
-            {/* Past Reviews */}
-            <Text style={styles.subtitle}>Your Past Reviews</Text>
+                                    {review.worker?.user?.imageUrl ? (
+                                        <Image
+                                            source={{ uri: review.worker.user.imageUrl }}
+                                            style={styles.reviewAvatar}
+                                        />
+                                    ) : (
+                                        <Ionicons name="person-circle" size={40} color="gray" />
+                                    )}
 
-            {reviews.map((review, index) => (
-                <View key={index} style={styles.reviewCard}>
+                                    <Text style={styles.reviewName}>
+                                        {review.worker?.fullName || "Anonymous"}
+                                    </Text>
 
-                    <View style={styles.reviewHeader}>
+                                </View>
 
-                        <View style={styles.reviewUser}>
+                                <Text style={styles.reviewDate}>
+                                    {new Date(review.createdAT).toLocaleDateString()}
+                                </Text>
 
-                            {review.worker?.user?.imageUrl ? (
-                                <Image
-                                    source={{ uri: review.worker.user.imageUrl }}
-                                    style={styles.reviewAvatar}
-                                />
-                            ) : (
-                                <Ionicons name="person-circle" size={40} color="gray" />
-                            )}
+                            </View>
 
-                            <Text style={styles.reviewName}>
-                                {review.worker?.fullName || "Anonymous"}
+                            <View style={styles.starRowSmall}>
+                                {[...Array(review.rating)].map((_, i) => (
+                                    <Ionicons key={i} name="star" size={18} color="#f59e0b" />
+                                ))}
+                            </View>
+
+                            <Text style={styles.reviewText}>
+                                {review.feedback}
                             </Text>
 
                         </View>
-
-                        <Text style={styles.reviewDate}>
-                            {new Date(review.createdAT).toLocaleDateString()}
-                        </Text>
-
-                    </View>
-
-                    <View style={styles.starRowSmall}>
-                        {[...Array(review.rating)].map((_, i) => (
-                            <Ionicons key={i} name="star" size={18} color="#f59e0b" />
-                        ))}
-                    </View>
-
-                    <Text style={styles.reviewText}>
-                        {review.feedback}
-                    </Text>
-
+                    ))}
                 </View>
-            ))}
-
-
-        </ScrollView>
+            </ScrollView>
+        </>
     );
 }
 
@@ -228,7 +232,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#f3f4f6",
-        padding: 20
+        padding: 30
     },
 
     center: {
