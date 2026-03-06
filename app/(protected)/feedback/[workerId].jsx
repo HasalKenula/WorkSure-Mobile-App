@@ -127,6 +127,21 @@ export default function UserFeedbackScreen() {
                 <Text style={styles.workerName}>{worker.fullName}</Text>
             </View>
 
+            {/* Rating */}
+            <Text style={styles.label}>Your Rating</Text>
+
+            <View style={styles.starRow}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                    <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                        <Ionicons
+                            name={star <= rating ? "star" : "star-outline"}
+                            size={32}
+                            color="#f59e0b"
+                        />
+                    </TouchableOpacity>
+                ))}
+            </View>
+
 
 
 
@@ -172,6 +187,18 @@ const styles = StyleSheet.create({
     workerName: {
         fontSize: 18,
         fontWeight: "600"
+    },
+
+    label: {
+        fontSize: 16,
+        marginTop: 15,
+        marginBottom: 5
+    },
+
+    starRow: {
+        flexDirection: "row",
+        gap: 10,
+        marginBottom: 10
     },
 
 
