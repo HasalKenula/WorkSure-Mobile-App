@@ -1,49 +1,73 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+
+import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const AuthContext = createContext({
-  isAuthenticated: false,
-  jwtToken: null,
-  loading: true,
-  login: () => {},
-  logout: () => {},
-});
+export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [jwtToken, setJwtToken] = useState(null);
+  const [username, setUsername] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // store only token
-  const login = async (token) => {
+  const isAdmin = username === "admin";
+
+  const login = async (token, username) => {
     setIsAuthenticated(true);
     setJwtToken(token);
+    setUsername(username);
+
     await AsyncStorage.setItem("token", token);
+    await AsyncStorage.setItem("username", username);
   };
 
   const logout = async () => {
     setIsAuthenticated(false);
     setJwtToken(null);
+    setUsername(null);
+
     await AsyncStorage.removeItem("token");
+    await AsyncStorage.removeItem("username");
   };
 
   useEffect(() => {
-    const loadToken = async () => {
-      const token = await AsyncStorage.getItem("token");
-      if (token) {
-        setIsAuthenticated(true);
-        setJwtToken(token);
+    const loadAuthData = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        const savedUsername = await AsyncStorage.getItem("username");
+
+        if (token && savedUsername) {
+          setIsAuthenticated(true);
+          setJwtToken(token);
+          setUsername(savedUsername);
+        }
+      } catch (error) {
+        console.error("Failed to load auth data", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    loadToken();
+
+    loadAuthData();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, jwtToken, loading, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        jwtToken,
+        username,
+        isAdmin,
+        loading,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
+}

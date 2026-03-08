@@ -17,7 +17,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { Ionicons, MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
-
+import DefaultAvatar from "../../../assets/default-user.png";
 
 export default function WorkerHire() {
   const { workerId } = useLocalSearchParams();
@@ -33,6 +33,7 @@ export default function WorkerHire() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const config = {
     headers: { Authorization: `Bearer ${jwtToken}` },
@@ -49,12 +50,24 @@ export default function WorkerHire() {
   }, [jwtToken]);
 
   /* ---------------- FETCH WORKER ---------------- */
+  // useEffect(() => {
+  //   if (!workerId) return;
+
+  //   api
+  //     .get(`/worker/id/${workerId}`, config)
+  //     .then(res => setWorker(res.data))
+  //     .catch(err => console.log("Worker load error:", err));
+  // }, [workerId]);
+
   useEffect(() => {
     if (!workerId) return;
 
     api
       .get(`/worker/id/${workerId}`, config)
-      .then(res => setWorker(res.data))
+      .then(res => {
+        setWorker(res.data);
+        setImageError(false); // reset error
+      })
       .catch(err => console.log("Worker load error:", err));
   }, [workerId]);
 
@@ -165,229 +178,230 @@ export default function WorkerHire() {
   const today = new Date().toISOString().split('T')[0];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Book Appointment</Text>
-          <Text style={styles.headerSubtitle}>Schedule your service with</Text>
-        </View>
 
-        {/* -------- WORKER CARD -------- */}
-        {worker && (
-          <View style={styles.workerCard}>
-            <View style={styles.workerHeader}>
-              <Image
-                source={{
-                  uri:
-                    worker?.user?.imageUrl ||
-                    "https://via.placeholder.com/150",
-                }}
-                style={styles.avatar}
-              />
-              <View style={styles.workerInfo}>
-                <Text style={styles.name}>{worker?.fullName}</Text>
-                <View style={styles.roleContainer}>
-                  <MaterialIcons name="work" size={16} color="#f59e0b" />
-                  <Text style={styles.role}>{worker?.jobRole}</Text>
-                </View>
-                <View style={styles.locationContainer}>
-                  <Ionicons name="location-sharp" size={16} color="#64748b" />
-                  <Text style={styles.location} numberOfLines={1}>
-                    {worker?.preferredServiceLocation || "Location not specified"}
-                  </Text>
-                </View>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Book Appointment</Text>
+        <Text style={styles.headerSubtitle}>Schedule your service with</Text>
+      </View>
+
+      {/* -------- WORKER CARD -------- */}
+      {worker && (
+        <View style={styles.workerCard}>
+          <View style={styles.workerHeader}>
+            <Image
+              source={
+                worker?.user?.imageUrl && !imageError
+                  ? { uri: worker.user.imageUrl }
+                  : DefaultAvatar
+              }
+              style={styles.avatar}
+              onError={() => setImageError(true)}
+            />
+            <View style={styles.workerInfo}>
+              <Text style={styles.name}>{worker?.fullName}</Text>
+              <View style={styles.roleContainer}>
+                <MaterialIcons name="work" size={16} color="#f59e0b" />
+                <Text style={styles.role}>{worker?.jobRole}</Text>
+              </View>
+              <View style={styles.locationContainer}>
+                <Ionicons name="location-sharp" size={16} color="#64748b" />
+                <Text style={styles.location} numberOfLines={1}>
+                  {worker?.preferredServiceLocation || "Location not specified"}
+                </Text>
               </View>
             </View>
           </View>
-        )}
-
-        {/* Calendar Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="calendar" size={24} color="#f59e0b" />
-            <Text style={styles.sectionTitle}>Select Date</Text>
-          </View>
-          <View style={styles.calendarContainer}>
-            <Calendar
-              markedDates={{
-                ...bookedDates,
-                [selectedDate]: {
-                  selected: true,
-                  selectedColor: "#f59e0b",
-                  selectedTextColor: "#fff",
-                },
-              }}
-              onDayPress={day => setSelectedDate(day.dateString)}
-              theme={{
-                backgroundColor: '#fff',
-                calendarBackground: '#fff',
-                textSectionTitleColor: '#94a3b8',
-                selectedDayBackgroundColor: '#f59e0b',
-                selectedDayTextColor: '#fff',
-                todayTextColor: '#f59e0b',
-                dayTextColor: '#1e293b',
-                textDisabledColor: '#cbd5e1',
-                monthTextColor: '#1e293b',
-                arrowColor: '#f59e0b',
-              }}
-              minDate={today}
-              hideExtraDays={true}
-              enableSwipeMonths={true}
-            />
-          </View>
         </View>
+      )}
 
-        {/* Time Picker Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="time" size={24} color="#f59e0b" />
-            <Text style={styles.sectionTitle}>Select Time</Text>
-          </View>
-          <Pressable
-            style={styles.timePicker}
-            onPress={() => setShowTimePicker(true)}
-          >
-            <View style={styles.timePickerContent}>
-              <Feather name="clock" size={20} color="#64748b" />
-              <Text style={styles.timeText}>
-                {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </Text>
-              <MaterialIcons name="arrow-drop-down" size={24} color="#64748b" />
-            </View>
-          </Pressable>
-
-          {showTimePicker && (
-            <DateTimePicker
-              value={time}
-              mode="time"
-              display="spinner"
-              onChange={(event, selected) => {
-                setShowTimePicker(false);
-                if (selected) setTime(selected);
-              }}
-            />
-          )}
+      {/* Calendar Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="calendar" size={24} color="#f59e0b" />
+          <Text style={styles.sectionTitle}>Select Date</Text>
         </View>
-
-        {/* Description Section */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Feather name="edit-3" size={24} color="#f59e0b" />
-            <Text style={styles.sectionTitle}>Job Description</Text>
-          </View>
-          <View style={styles.textAreaContainer}>
-            <TextInput
-              style={styles.textArea}
-              placeholder="Describe the job in detail..."
-              placeholderTextColor="#94a3b8"
-              multiline
-              value={description}
-              onChangeText={setDescription}
-              numberOfLines={4}
-              maxLength={500}
-            />
-            <View style={styles.textAreaFooter}>
-              <Text style={styles.charCount}>{description.length}/500</Text>
-            </View>
-          </View>
+        <View style={styles.calendarContainer}>
+          <Calendar
+            markedDates={{
+              ...bookedDates,
+              [selectedDate]: {
+                selected: true,
+                selectedColor: "#f59e0b",
+                selectedTextColor: "#fff",
+              },
+            }}
+            onDayPress={day => setSelectedDate(day.dateString)}
+            theme={{
+              backgroundColor: '#fff',
+              calendarBackground: '#fff',
+              textSectionTitleColor: '#94a3b8',
+              selectedDayBackgroundColor: '#f59e0b',
+              selectedDayTextColor: '#fff',
+              todayTextColor: '#f59e0b',
+              dayTextColor: '#1e293b',
+              textDisabledColor: '#cbd5e1',
+              monthTextColor: '#1e293b',
+              arrowColor: '#f59e0b',
+            }}
+            minDate={today}
+            hideExtraDays={true}
+            enableSwipeMonths={true}
+          />
         </View>
+      </View>
 
-        {/* Submit Button */}
+      {/* Time Picker Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="time" size={24} color="#f59e0b" />
+          <Text style={styles.sectionTitle}>Select Time</Text>
+        </View>
         <Pressable
-          style={[styles.submitButton, (!selectedDate || !description.trim() || loading) && styles.disabledButton]}
-          onPress={createHire}
-          disabled={!selectedDate || !description.trim() || loading}
+          style={styles.timePicker}
+          onPress={() => setShowTimePicker(true)}
         >
-          <View style={styles.buttonContent}>
-            <MaterialIcons name="send" size={20} color="#fff" />
-            <Text style={styles.submitButtonText}>
-              {loading ? "Sending..." : "Send Job Request"}
+          <View style={styles.timePickerContent}>
+            <Feather name="clock" size={20} color="#64748b" />
+            <Text style={styles.timeText}>
+              {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </Text>
+            <MaterialIcons name="arrow-drop-down" size={24} color="#64748b" />
           </View>
         </Pressable>
 
-        {/* -------- MY REQUESTS -------- */}
-        {myHires.length > 0 && (
-          <View style={styles.requestsSection}>
-            <View style={styles.sectionHeader}>
-              <FontAwesome name="history" size={24} color="#f59e0b" />
-              <Text style={styles.sectionTitle}>Your Requests</Text>
-              <View style={styles.requestCount}>
-                <Text style={styles.requestCountText}>{myHires.length}</Text>
+        {showTimePicker && (
+          <DateTimePicker
+            value={time}
+            mode="time"
+            display="spinner"
+            onChange={(event, selected) => {
+              setShowTimePicker(false);
+              if (selected) setTime(selected);
+            }}
+          />
+        )}
+      </View>
+
+      {/* Description Section */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Feather name="edit-3" size={24} color="#f59e0b" />
+          <Text style={styles.sectionTitle}>Job Description</Text>
+        </View>
+        <View style={styles.textAreaContainer}>
+          <TextInput
+            style={styles.textArea}
+            placeholder="Describe the job in detail..."
+            placeholderTextColor="#94a3b8"
+            multiline
+            value={description}
+            onChangeText={setDescription}
+            numberOfLines={4}
+            maxLength={500}
+          />
+          <View style={styles.textAreaFooter}>
+            <Text style={styles.charCount}>{description.length}/500</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Submit Button */}
+      <Pressable
+        style={[styles.submitButton, (!selectedDate || !description.trim() || loading) && styles.disabledButton]}
+        onPress={createHire}
+        disabled={!selectedDate || !description.trim() || loading}
+      >
+        <View style={styles.buttonContent}>
+          <MaterialIcons name="send" size={20} color="#fff" />
+          <Text style={styles.submitButtonText}>
+            {loading ? "Sending..." : "Send Job Request"}
+          </Text>
+        </View>
+      </Pressable>
+
+      {/* -------- MY REQUESTS -------- */}
+      {myHires.length > 0 && (
+        <View style={styles.requestsSection}>
+          <View style={styles.sectionHeader}>
+            <FontAwesome name="history" size={24} color="#f59e0b" />
+            <Text style={styles.sectionTitle}>Your Requests</Text>
+            <View style={styles.requestCount}>
+              <Text style={styles.requestCountText}>{myHires.length}</Text>
+            </View>
+          </View>
+
+          {myHires.map((hire, index) => (
+            <View key={index} style={styles.requestCard}>
+              <View style={styles.requestHeader}>
+                <View>
+                  <Text style={styles.requestDate}>{hire.bookingDate}</Text>
+                  <Text style={styles.requestTime}>{hire.bookingTime}</Text>
+                </View>
+                <View style={[
+                  styles.statusBadge,
+                  hire.isComplete ? styles.completeBadge :
+                    hire.isOngoing ? styles.ongoingBadge :
+                      hire.isPending ? styles.pendingBadge : styles.seenBadge
+                ]}>
+                  <Text style={[
+                    styles.statusText,
+                    hire.isComplete ? { color: '#059669' } :
+                      hire.isOngoing ? { color: '#2563eb' } :
+                        hire.isPending ? { color: '#d97706' } : { color: '#4b5563' }
+                  ]}>
+                    {hire.isComplete ? "Completed" :
+                      hire.isOngoing ? "Ongoing" :
+                        hire.isPending ? "Pending" : "Seen"}
+                  </Text>
+                </View>
+              </View>
+
+              {hire.description && (
+                <Text style={styles.requestDescription} numberOfLines={2}>
+                  {hire.description}
+                </Text>
+              )}
+
+              <View style={styles.requestFooter}>
+                <View style={styles.statusRow}>
+                  <View style={styles.statusItem}>
+                    <Ionicons name="checkmark-circle" size={16} color={hire.isBooked ? "#10b981" : "#94a3b8"} />
+                    <Text style={styles.statusLabel}>Booked</Text>
+                  </View>
+                  <View style={styles.statusItem}>
+                    <Ionicons name="time" size={16} color={hire.isPending ? "#f59e0b" : "#94a3b8"} />
+                    <Text style={styles.statusLabel}>Pending</Text>
+                  </View>
+                  <View style={styles.statusItem}>
+                    <MaterialIcons name="work" size={16} color={hire.isOngoing ? "#3b82f6" : "#94a3b8"} />
+                    <Text style={styles.statusLabel}>Ongoing</Text>
+                  </View>
+                  <View style={styles.statusItem}>
+                    <MaterialIcons name="done-all" size={16} color={hire.isComplete ? "#10b981" : "#94a3b8"} />
+                    <Text style={styles.statusLabel}>Complete</Text>
+                  </View>
+                </View>
               </View>
             </View>
+          ))}
+        </View>
+      )}
 
-            {myHires.map((hire, index) => (
-              <View key={index} style={styles.requestCard}>
-                <View style={styles.requestHeader}>
-                  <View>
-                    <Text style={styles.requestDate}>{hire.bookingDate}</Text>
-                    <Text style={styles.requestTime}>{hire.bookingTime}</Text>
-                  </View>
-                  <View style={[
-                    styles.statusBadge,
-                    hire.isComplete ? styles.completeBadge :
-                      hire.isOngoing ? styles.ongoingBadge :
-                        hire.isPending ? styles.pendingBadge : styles.seenBadge
-                  ]}>
-                    <Text style={[
-                      styles.statusText,
-                      hire.isComplete ? { color: '#059669' } :
-                        hire.isOngoing ? { color: '#2563eb' } :
-                          hire.isPending ? { color: '#d97706' } : { color: '#4b5563' }
-                    ]}>
-                      {hire.isComplete ? "Completed" :
-                        hire.isOngoing ? "Ongoing" :
-                          hire.isPending ? "Pending" : "Seen"}
-                    </Text>
-                  </View>
-                </View>
+      {/* Show message if no hires found */}
+      {myHires.length === 0 && user && (
+        <View style={styles.noRequestsSection}>
+          <FontAwesome name="file-text-o" size={40} color="#e2e8f0" />
+          <Text style={styles.noRequestsText}>No job requests yet</Text>
+          <Text style={styles.noRequestsSubtext}>
+            Your requests will appear here after booking
+          </Text>
+        </View>
+      )}
+    </ScrollView>
 
-                {hire.description && (
-                  <Text style={styles.requestDescription} numberOfLines={2}>
-                    {hire.description}
-                  </Text>
-                )}
 
-                <View style={styles.requestFooter}>
-                  <View style={styles.statusRow}>
-                    <View style={styles.statusItem}>
-                      <Ionicons name="checkmark-circle" size={16} color={hire.isBooked ? "#10b981" : "#94a3b8"} />
-                      <Text style={styles.statusLabel}>Booked</Text>
-                    </View>
-                    <View style={styles.statusItem}>
-                      <Ionicons name="time" size={16} color={hire.isPending ? "#f59e0b" : "#94a3b8"} />
-                      <Text style={styles.statusLabel}>Pending</Text>
-                    </View>
-                    <View style={styles.statusItem}>
-                      <MaterialIcons name="work" size={16} color={hire.isOngoing ? "#3b82f6" : "#94a3b8"} />
-                      <Text style={styles.statusLabel}>Ongoing</Text>
-                    </View>
-                    <View style={styles.statusItem}>
-                      <MaterialIcons name="done-all" size={16} color={hire.isComplete ? "#10b981" : "#94a3b8"} />
-                      <Text style={styles.statusLabel}>Complete</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Show message if no hires found */}
-        {myHires.length === 0 && user && (
-          <View style={styles.noRequestsSection}>
-            <FontAwesome name="file-text-o" size={40} color="#e2e8f0" />
-            <Text style={styles.noRequestsText}>No job requests yet</Text>
-            <Text style={styles.noRequestsSubtext}>
-              Your requests will appear here after booking
-            </Text>
-          </View>
-        )}
-      </ScrollView>
-
-    </SafeAreaView>
   );
 
 }
@@ -399,7 +413,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8fafc",
   },
   header: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f59e0b",
     paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 24,
@@ -415,12 +429,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#1e293b",
+    color: "#fff",
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: "#64748b",
+    color: "#fff",
   },
   workerCard: {
     backgroundColor: "#fff",
@@ -599,7 +613,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginHorizontal: 20,
-    marginBottom: 30,
+    marginBottom: 40,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
@@ -696,7 +710,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 30,
   },
-  
+
   noRequestsText: {
     fontSize: 18,
     fontWeight: "600",

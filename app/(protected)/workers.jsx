@@ -16,6 +16,8 @@ import { useAuth } from "../../context/AuthContext";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
+import { StatusBar } from "expo-status-bar";
+import defaultUser from "../../assets/default-user.png";
 
 export default function WorkersScreen() {
   const [workers, setWorkers] = useState([]);
@@ -62,35 +64,28 @@ export default function WorkersScreen() {
   const renderAvatar = (worker) => {
     const hasImage = worker.user?.imageUrl && !imageErrorIds[worker.id];
 
-    if (hasImage) {
-      return (
-        <View style={styles.avatarContainer}>
-          <Image
-            source={{ uri: worker.user.imageUrl }}
-            style={styles.avatar}
-            onError={() =>
-              setImageErrorIds((prev) => ({ ...prev, [worker.id]: true }))
-            }
-          />
-          <View style={[
-            styles.statusIndicator,
-            worker.status === "Free" ? styles.indicatorFree : styles.indicatorBusy
-          ]} />
-        </View>
-      );
-    }
-
-    const initial = worker.fullName ? worker.fullName.charAt(0).toUpperCase() : "?";
-
     return (
-      <View style={styles.fallbackAvatarContainer}>
-        <View style={styles.fallbackAvatar}>
-          <Text style={styles.initial}>{initial}</Text>
-        </View>
-        <View style={[
-          styles.statusIndicator,
-          worker.status === "Free" ? styles.indicatorFree : styles.indicatorBusy
-        ]} />
+      <View style={styles.avatarContainer}>
+        <Image
+          source={
+            hasImage
+              ? { uri: worker.user.imageUrl }
+              : defaultUser
+          }
+          style={styles.avatar}
+          onError={() =>
+            setImageErrorIds((prev) => ({ ...prev, [worker.id]: true }))
+          }
+        />
+
+        <View
+          style={[
+            styles.statusIndicator,
+            worker.status === "Free"
+              ? styles.indicatorFree
+              : styles.indicatorBusy,
+          ]}
+        />
       </View>
     );
   };
@@ -163,58 +158,58 @@ export default function WorkersScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
-     
-        <View style={styles.container}>
-          {/* Header Section */}
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Find Workers</Text>
-            <Text style={styles.headerSubtitle}>
-              {filteredWorkers.length} professionals available
-            </Text>
-          </View>
-
-          {/*  Search Bar */}
-          <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="#94a3b8" style={styles.searchIcon} />
-            <TextInput
-              placeholder="Search workers by name..."
-              placeholderTextColor="#94a3b8"
-              value={searchText}
-              onChangeText={setSearchText}
-              style={styles.searchInput}
-            />
-            {searchText.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchText("")} style={styles.clearButton}>
-                <Ionicons name="close-circle" size={18} color="#94a3b8" />
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Results Info */}
-          <View style={styles.resultsInfo}>
-            <Text style={styles.resultsText}>
-              Showing {filteredWorkers.length} workers
-            </Text>
-          </View>
-
-          <FlatList
-            data={filteredWorkers}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={renderWorker}
-            contentContainerStyle={styles.list}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={
-              <View style={styles.emptyState}>
-                <Ionicons name="people-outline" size={60} color="#e2e8f0" />
-                <Text style={styles.emptyTitle}>No workers found</Text>
-                <Text style={styles.emptyText}>
-                  {searchText ? "Try a different search term" : "No workers available"}
-                </Text>
-              </View>
-            }
-          />
+      <StatusBar style="dark" />
+      <View style={styles.container}>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Find Workers</Text>
+          <Text style={styles.headerSubtitle}>
+            {filteredWorkers.length} professionals available
+          </Text>
         </View>
-      
+
+        {/*  Search Bar */}
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} color="#94a3b8" style={styles.searchIcon} />
+          <TextInput
+            placeholder="Search workers by name..."
+            placeholderTextColor="#94a3b8"
+            value={searchText}
+            onChangeText={setSearchText}
+            style={styles.searchInput}
+          />
+          {searchText.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchText("")} style={styles.clearButton}>
+              <Ionicons name="close-circle" size={18} color="#94a3b8" />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Results Info */}
+        <View style={styles.resultsInfo}>
+          <Text style={styles.resultsText}>
+            Showing {filteredWorkers.length} workers
+          </Text>
+        </View>
+
+        <FlatList
+          data={filteredWorkers}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderWorker}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            <View style={styles.emptyState}>
+              <Ionicons name="people-outline" size={60} color="#e2e8f0" />
+              <Text style={styles.emptyTitle}>No workers found</Text>
+              <Text style={styles.emptyText}>
+                {searchText ? "Try a different search term" : "No workers available"}
+              </Text>
+            </View>
+          }
+        />
+      </View>
+
     </SafeAreaView>
   );
 }
@@ -237,7 +232,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   header: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f59e0b",
     paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 24,
@@ -253,12 +248,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#1e293b",
+    color: "#fff",
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 14,
-    color: "#64748b",
+    color: "#fff",
   },
   searchContainer: {
     flexDirection: "row",

@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
 import api from "../services/api";
-
 
 export default function LoginScreen() {
   const { login } = useAuth();
@@ -16,7 +14,10 @@ export default function LoginScreen() {
 
   const submit = async () => {
     if (!username || !password) {
-      Toast.show({ type: "error", text1: "Username and password are required!" });
+      Toast.show({
+        type: "error",
+        text1: "Username and password are required!",
+      });
       return;
     }
 
@@ -26,16 +27,34 @@ export default function LoginScreen() {
         password,
       });
 
-      const token = response.data; // token string only
-      if (!token) throw new Error("Invalid response from server");
+      // EXPECTING SAME RESPONSE AS WEB
+      const token = response.data.token;
+      const returnedUsername = response.data.username;
 
-      await login(token);
+      if (!token || !returnedUsername) {
+        throw new Error("Invalid response from server");
+      }
 
-      Toast.show({ type: "success", text1: "Login successful!" });
-      router.replace("/(protected)/home");
+      await login(token, returnedUsername);
+
+      Toast.show({
+        type: "success",
+        text1: "Login successful!",
+      });
+
+      // admin vs user routing (same logic as web)
+      if (returnedUsername === "admin") {
+        router.replace("/(admin)/dashboard");
+      } else {
+        router.replace("/(protected)/home");
+      }
     } catch (err) {
       console.log("Login error:", err);
-      Toast.show({ type: "error", text1: "Login failed! Check your credentials." });
+      Toast.show({
+        type: "error",
+        text1: "Login failed!",
+        text2: "Check your credentials",
+      });
     }
   };
 
@@ -48,7 +67,9 @@ export default function LoginScreen() {
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
+        autoCapitalize="none"
       />
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -61,10 +82,13 @@ export default function LoginScreen() {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => router.push("/(auth)/register")}>
+      {/* Register link */}
+      <TouchableOpacity
+        onPress={() => router.push("/(auth)/register")}
+        style={styles.registerContainer}
+      >
         <Text style={styles.registerText}>
-          Don't have an account?{" "}
-          <Text style={styles.registerLink}>Register</Text>
+          Don't have an account? <Text style={styles.registerLink}>Register</Text>
         </Text>
       </TouchableOpacity>
     </View>
@@ -72,19 +96,44 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
-  heading: { fontSize: 32, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#d1d5db", padding: 10, borderRadius: 8, marginBottom: 10 },
-  button: { backgroundColor: "#f59e0b", padding: 15, borderRadius: 8, alignItems: "center" },
-  buttonText: { color: "#fff", fontWeight: "bold" },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 20,
+  },
+  heading: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#d1d5db",
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: "#f59e0b",
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  registerContainer: {
+    marginTop: 20,
+    alignItems: "center",
+  },
   registerText: {
-  marginTop: 20,
-  textAlign: "center",
-  color: "#374151",
-},
-registerLink: {
-  color: "#f59e0b",
-  fontWeight: "bold",
-},
-
+    fontSize: 14,
+    color: "#6b7280",
+  },
+  registerLink: {
+    color: "#f59e0b",
+    fontWeight: "bold",
+  },
 });
