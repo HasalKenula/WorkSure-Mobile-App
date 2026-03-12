@@ -26,7 +26,6 @@ import {
 } from "@expo/vector-icons";
 import api from "../services/api";
 
-const DEFAULT_IMG = require("../../assets/icon.png");
 
 export default function WorkerDashBoard() {
   const { jwtToken, isAuthenticated } = useAuth();
@@ -246,30 +245,7 @@ export default function WorkerDashBoard() {
     ));
   };
 
-  /* ---------- SAMPLE REVIEWS ---------- */
-  const workerReviews = [
-    {
-      id: 1,
-      name: "John Doe",
-      date: new Date().toLocaleDateString(),
-      rating: 3,
-      review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    },
-    {
-      id: 2,
-      name: "Michael Silva",
-      date: new Date().toLocaleDateString(),
-      rating: 4,
-      review: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    },
-    {
-      id: 3,
-      name: "Kamal Perera",
-      date: new Date().toLocaleDateString(),
-      rating: 5,
-      review: "Praesent aliquet, leo non facilisis malesuada.",
-    },
-  ];
+  
 
   if (loading) {
     return (
@@ -556,35 +532,6 @@ export default function WorkerDashBoard() {
             </View>
           )}
         </View>
-
-        {/* ================= USER REVIEWS ================= */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <FontAwesome name="star" size={24} color="#f59e0b" />
-            <Text style={styles.sectionTitle}>User Reviews</Text>
-          </View>
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {workerReviews.map((review) => (
-              <View key={review.id} style={styles.reviewCard}>
-                <View style={styles.reviewHeader}>
-                  <View style={styles.reviewerInfo}>
-                    <Image source={DEFAULT_IMG} style={styles.reviewerAvatar} />
-                    <View>
-                      <Text style={styles.reviewerName}>{review.name}</Text>
-                      <Text style={styles.reviewDate}>{review.date}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.reviewRating}>
-                    {renderStars(review.rating)}
-                    <Text style={styles.ratingValue}>{review.rating}.0</Text>
-                  </View>
-                </View>
-                <Text style={styles.reviewText}>{review.review}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
       </ScrollView>
       
       <Toast />
@@ -648,6 +595,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: -20,
     marginBottom: 20,
+    marginRight:40,
+    marginLeft:40,
   },
   statCard: {
     flex: 1,
@@ -664,6 +613,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: "#f1f5f9",
+    marginBottom: 20,
   },
   statIcon: {
     width: 50,
@@ -936,59 +886,6 @@ const styles = StyleSheet.create({
     color: "#94a3b8",
     marginTop: 12,
   },
-  reviewCard: {
-    width: 300,
-    backgroundColor: "#fff",
-    borderRadius: 16,
-    padding: 20,
-    marginRight: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: "#f1f5f9",
-  },
-  reviewHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 16,
-  },
-  reviewerInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  reviewerAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 12,
-  },
-  reviewerName: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#1e293b",
-    marginBottom: 2,
-  },
-  reviewDate: {
-    fontSize: 12,
-    color: "#94a3b8",
-  },
-  reviewRating: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  ratingValue: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1e293b",
-    marginLeft: 6,
-  },
-  reviewText: {
-    fontSize: 14,
-    color: "#475569",
-    lineHeight: 20,
-  },
+ 
+ 
 });
