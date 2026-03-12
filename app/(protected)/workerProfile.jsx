@@ -1150,7 +1150,7 @@ export default function WorkerProfile() {
         </View>
 
         {/* Edit Profile Button */}
-        <Pressable style={styles.editProfileBtn}>
+        <Pressable style={styles.editProfileBtn} onPress={()=>router.push("workerProfileUpdate")}>
           <MaterialIcons name="edit" size={20} color="#fff" />
           <Text style={styles.editProfileText}>Edit Profile</Text>
         </Pressable>
