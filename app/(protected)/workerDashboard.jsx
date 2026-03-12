@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -36,6 +36,19 @@ export default function WorkerDashBoard() {
   const [worker, setWorker] = useState(null);
   const [hire, setHire] = useState([]);
   const [hiresLoading, setHiresLoading] = useState(false);
+  const scrollRef = useRef(null);
+
+  const newJobRef = useRef(null);
+  const ongoingRef = useRef(null);
+
+  const scrollToSection = (ref) => {
+    ref.current?.measureLayout(
+      scrollRef.current,
+      (x, y) => {
+        scrollRef.current.scrollTo({ y, animated: true });
+      }
+    );
+  };
 
   const config = {
     headers: {
@@ -51,7 +64,7 @@ export default function WorkerDashBoard() {
     }
 
     setLoading(true);
-    
+
     api
       .get("/user", config)
       .then((res) => {
@@ -71,7 +84,7 @@ export default function WorkerDashBoard() {
   /* ---------- FETCH WORKER ---------- */
   const getWorkers = async () => {
     if (!userId) return;
-    
+
     try {
       const response = await api.get(
         `/worker/${userId}`,
@@ -90,7 +103,7 @@ export default function WorkerDashBoard() {
   /* ---------- FETCH HIRES ---------- */
   const getHires = async () => {
     if (!worker || !worker.id) return;
-    
+
     setHiresLoading(true);
     try {
       const response = await api.get(
@@ -245,7 +258,7 @@ export default function WorkerDashBoard() {
     ));
   };
 
-  
+
 
   if (loading) {
     return (
@@ -258,7 +271,7 @@ export default function WorkerDashBoard() {
 
   return (
     <SafeAreaView style={styles.container} edges={["left", "right", "bottom"]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
         {/* ================= HEADER ================= */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Worker Dashboard</Text>
@@ -304,30 +317,24 @@ export default function WorkerDashBoard() {
         {/* ================= EARNINGS & RATING ================= */}
         <View style={styles.earningRatingContainer}>
           {/* Earnings Card */}
-          <View style={styles.earningCard}>
+          <TouchableOpacity style={styles.earningCard} onPress={() => scrollToSection(newJobRef)}>
             <View style={styles.cardIcon}>
-              <FontAwesome5 name="money-bill-wave" size={40} color="#f59e0b" />
+              <MaterialIcons name="work-outline" size={40} color="#f59e0b" />
             </View>
-            <Text style={styles.cardTitle}>Total Earnings</Text>
-            <Text style={styles.earningAmount}>Rs. 0</Text>
-            <Text style={styles.cardSubtitle}>Total revenue earned</Text>
-          </View>
+            <Text style={styles.cardTitle}>New Requests</Text>
+          </TouchableOpacity >
 
           {/* Rating Card */}
-          <View style={styles.ratingCard}>
+          <TouchableOpacity style={styles.ratingCard} onPress={() => scrollToSection(ongoingRef)}>
             <View style={styles.cardIcon}>
-              <AntDesign name="star" size={40} color="#f59e0b" />
+              <MaterialIcons name="play-circle-outline" size={40} color="#f59e0b" />
             </View>
-            <Text style={styles.cardTitle}>Rating</Text>
-            <View style={styles.starsContainer}>
-              {renderStars(0)}
-            </View>
-            <Text style={styles.ratingText}>0.0 (0 Reviews)</Text>
-          </View>
+            <Text style={styles.cardTitle}>Ongoing Works</Text>
+          </TouchableOpacity >
         </View>
 
         {/* ================= NEW JOB REQUESTS ================= */}
-        <View style={styles.section}>
+        <View ref={newJobRef} style={styles.section}>
           <View style={styles.sectionHeader}>
             <MaterialIcons name="work-outline" size={24} color="#f59e0b" />
             <Text style={styles.sectionTitle}>New Job Requests</Text>
@@ -359,7 +366,7 @@ export default function WorkerDashBoard() {
                       </Text>
                     </View>
                   </View>
-                  
+
                   <View style={styles.requestInfo}>
                     <Text style={styles.clientName}>{item.user?.name || "Unknown Client"}</Text>
                     <View style={styles.dateTimeRow}>
@@ -371,7 +378,7 @@ export default function WorkerDashBoard() {
                     <Text style={styles.description} numberOfLines={2}>
                       {item.description}
                     </Text>
-                    
+
                     <View style={styles.actionButtons}>
                       <TouchableOpacity
                         style={[
@@ -389,7 +396,7 @@ export default function WorkerDashBoard() {
                           {item.isBooked ? "Approve" : "Block"}
                         </Text>
                       </TouchableOpacity>
-                      
+
                       <TouchableOpacity
                         style={[
                           styles.actionButton,
@@ -402,7 +409,7 @@ export default function WorkerDashBoard() {
                           {item.isPending ? "Pending" : "Seen"}
                         </Text>
                       </TouchableOpacity>
-                      
+
                       <TouchableOpacity
                         style={styles.profileButton}
                         onPress={() => router.push(`/workerView/${item.user?.id}`)}
@@ -424,7 +431,7 @@ export default function WorkerDashBoard() {
         </View>
 
         {/* ================= ONGOING WORKS ================= */}
-        <View style={styles.section}>
+        <View ref={ongoingRef} style={styles.section}>
           <View style={styles.sectionHeader}>
             <MaterialIcons name="play-circle-outline" size={24} color="#f59e0b" />
             <Text style={styles.sectionTitle}>Ongoing Works</Text>
@@ -466,7 +473,7 @@ export default function WorkerDashBoard() {
                       </View>
                     </View>
                   </View>
-                  
+
                   <View style={styles.requestInfo}>
                     <Text style={styles.clientName}>{item.user?.name || "Unknown Client"}</Text>
                     <View style={styles.dateTimeRow}>
@@ -478,7 +485,7 @@ export default function WorkerDashBoard() {
                     <Text style={styles.description} numberOfLines={2}>
                       {item.description}
                     </Text>
-                    
+
                     <View style={styles.actionButtons}>
                       <TouchableOpacity
                         style={[
@@ -493,7 +500,7 @@ export default function WorkerDashBoard() {
                           <Ionicons name="close-circle" size={18} color="#dc2626" />
                         )}
                       </TouchableOpacity>
-                      
+
                       <TouchableOpacity
                         style={[
                           styles.actionButton,
@@ -503,7 +510,7 @@ export default function WorkerDashBoard() {
                       >
                         <MaterialIcons name="play-circle" size={18} color={item.isOngoing ? "#d97706" : "#3b82f6"} />
                       </TouchableOpacity>
-                      
+
                       <TouchableOpacity
                         style={[
                           styles.actionButton,
@@ -513,7 +520,7 @@ export default function WorkerDashBoard() {
                       >
                         <MaterialIcons name="done-all" size={18} color={item.isComplete ? "#059669" : "#64748b"} />
                       </TouchableOpacity>
-                      
+
                       <TouchableOpacity
                         style={styles.profileButton}
                         onPress={() => router.push(`/workerView/${item.user?.id}`)}
@@ -533,7 +540,7 @@ export default function WorkerDashBoard() {
           )}
         </View>
       </ScrollView>
-      
+
       <Toast />
     </SafeAreaView>
   );
@@ -595,8 +602,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: -20,
     marginBottom: 20,
-    marginRight:40,
-    marginLeft:40,
+    marginRight: 40,
+    marginLeft: 40,
   },
   statCard: {
     flex: 1,
@@ -680,24 +687,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#64748b",
     marginBottom: 8,
-  },
-  earningAmount: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#1e293b",
-    marginBottom: 4,
-  },
-  cardSubtitle: {
-    fontSize: 12,
-    color: "#94a3b8",
-  },
-  starsContainer: {
-    flexDirection: "row",
-    marginBottom: 8,
-  },
-  ratingText: {
-    fontSize: 14,
-    color: "#64748b",
   },
   section: {
     paddingHorizontal: 20,
@@ -886,6 +875,6 @@ const styles = StyleSheet.create({
     color: "#94a3b8",
     marginTop: 12,
   },
- 
- 
+
+
 });
