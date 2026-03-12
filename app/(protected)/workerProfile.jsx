@@ -198,7 +198,7 @@ export default function WorkerProfile() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["left", "right", "bottom"]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* ================= HEADER WITH GRADIENT ================= */}
         <View style={styles.headerBackground}>
@@ -616,9 +616,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 16,
+    padding: 4,
     borderRadius: 16,
-    marginHorizontal: 4,
+    marginHorizontal: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
