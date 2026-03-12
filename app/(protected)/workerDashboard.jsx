@@ -257,7 +257,7 @@ export default function WorkerDashBoard() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["left", "right", "bottom"]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* ================= HEADER ================= */}
         <View style={styles.header}>
@@ -568,7 +568,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: "#f59e0b",
-    paddingTop: 20,
+    paddingTop: 40,
     paddingBottom: 30,
     paddingHorizontal: 20,
     borderBottomLeftRadius: 25,
