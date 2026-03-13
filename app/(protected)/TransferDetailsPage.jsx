@@ -8,6 +8,8 @@ import {
   Pressable,
   RefreshControl,
   Dimensions,
+  Image,
+  Modal,
 } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 import Toast from "react-native-toast-message";
@@ -24,6 +26,7 @@ import { LineChart } from 'react-native-chart-kit';
 import api from "../services/api";
 
 const { width: screenWidth } = Dimensions.get('window');
+const DEFAULT_IMG = require("../../assets/icon.png");
 
 export default function TransferDetailsPage() {
   const { jwtToken, isAuthenticated } = useAuth();
@@ -34,6 +37,8 @@ export default function TransferDetailsPage() {
   const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Create config dynamically
   const getConfig = () => ({
@@ -223,6 +228,11 @@ export default function TransferDetailsPage() {
     });
   };
 
+  const openImageModal = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setModalVisible(true);
+  };
+
   if (loading && !worker) {
     return (
       <SafeAreaView style={styles.center}>
@@ -255,11 +265,18 @@ export default function TransferDetailsPage() {
           </View>
         </View>
 
-        {/* Worker Info - Fixed icon */}
+        {/* Worker Info with Image */}
         {worker && (
           <View style={styles.workerInfoCard}>
             <View style={styles.workerAvatar}>
-              <FontAwesome name="user" size={24} color="#f59e0b" />
+              {worker.user?.imageUrl ? (
+                <Image
+                  source={{ uri: worker.user.imageUrl }}
+                  style={styles.workerAvatarImage}
+                />
+              ) : (
+                <FontAwesome name="user" size={24} color="#f59e0b" />
+              )}
             </View>
             <View style={styles.workerDetails}>
               <Text style={styles.workerName}>{worker.fullName}</Text>
@@ -326,7 +343,7 @@ export default function TransferDetailsPage() {
           </View>
         )}
 
-        {/* Transfers List */}
+        {/* Transfers List with Images */}
         <View style={styles.transfersContainer}>
           <View style={styles.sectionHeader}>
             <MaterialIcons name="history" size={22} color="#f59e0b" />
@@ -368,6 +385,24 @@ export default function TransferDetailsPage() {
                     <Text style={styles.amountLabel}>Amount:</Text>
                     <Text style={styles.amountValue}>{formatCurrency(transfer.amount)}</Text>
                   </View>
+
+                  {/* Transfer Receipt Image */}
+                  {transfer.receiptImage && (
+                    <Pressable 
+                      style={styles.receiptImageContainer}
+                      onPress={() => openImageModal(transfer.receiptImage)}
+                    >
+                      <Image
+                        source={{ uri: transfer.receiptImage }}
+                        style={styles.receiptImage}
+                        resizeMode="cover"
+                      />
+                      <View style={styles.imageOverlay}>
+                        <MaterialIcons name="zoom-in" size={24} color="#fff" />
+                        <Text style={styles.imageOverlayText}>View Receipt</Text>
+                      </View>
+                    </Pressable>
+                  )}
 
                   <View style={styles.detailsGrid}>
                     <View style={styles.detailItem}>
@@ -423,6 +458,31 @@ export default function TransferDetailsPage() {
           </View>
         )}
       </ScrollView>
+
+      {/* Image Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable 
+            style={styles.modalCloseButton}
+            onPress={() => setModalVisible(false)}
+          >
+            <Ionicons name="close" size={30} color="#fff" />
+          </Pressable>
+          {selectedImage && (
+            <Image
+              source={{ uri: selectedImage }}
+              style={styles.modalImage}
+              resizeMode="contain"
+            />
+          )}
+        </View>
+      </Modal>
+
       <Toast />
     </SafeAreaView>
   );
@@ -506,6 +566,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
+    overflow: "hidden",
+  },
+  workerAvatarImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
   },
   workerDetails: {
     flex: 1,
@@ -727,6 +793,33 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#f59e0b",
   },
+  receiptImageContainer: {
+    marginTop: 8,
+    borderRadius: 8,
+    overflow: "hidden",
+    position: "relative",
+  },
+  receiptImage: {
+    width: "100%",
+    height: 150,
+    borderRadius: 8,
+  },
+  imageOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageOverlayText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+    marginTop: 4,
+  },
   detailsGrid: {
     gap: 8,
   },
@@ -794,5 +887,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#f59e0b",
+  },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalCloseButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    zIndex: 10,
+    padding: 10,
+  },
+  modalImage: {
+    width: screenWidth,
+    height: screenWidth,
   },
 });

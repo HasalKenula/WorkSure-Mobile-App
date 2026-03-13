@@ -8,6 +8,7 @@ import {
   Pressable,
   RefreshControl,
   Dimensions,
+  Image,
 } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 import Toast from "react-native-toast-message";
@@ -24,6 +25,7 @@ import { LineChart } from 'react-native-chart-kit';
 import api from "../services/api";
 
 const { width: screenWidth } = Dimensions.get('window');
+const DEFAULT_IMG = require("../../assets/icon.png");
 
 export default function WorkerSlipsPage() {
   const { jwtToken, isAuthenticated } = useAuth();
@@ -34,6 +36,8 @@ export default function WorkerSlipsPage() {
   const [slips, setSlips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Create config dynamically
   const getConfig = () => ({
@@ -214,6 +218,11 @@ export default function WorkerSlipsPage() {
     }
   };
 
+  const openImageModal = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setModalVisible(true);
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.center}>
@@ -244,11 +253,18 @@ export default function WorkerSlipsPage() {
           </View>
         </View>
 
-        {/* Worker Info */}
+        {/* Worker Info with Image */}
         {worker && (
           <View style={styles.workerInfoCard}>
             <View style={styles.workerAvatar}>
-              <MaterialIcons name="person" size={24} color="#f59e0b" />
+              {worker.user?.imageUrl ? (
+                <Image
+                  source={{ uri: worker.user.imageUrl }}
+                  style={styles.workerAvatarImage}
+                />
+              ) : (
+                <MaterialIcons name="person" size={24} color="#f59e0b" />
+              )}
             </View>
             <View style={styles.workerDetails}>
               <Text style={styles.workerName}>{worker.fullName}</Text>
@@ -304,7 +320,7 @@ export default function WorkerSlipsPage() {
           </View>
         )}
 
-        {/* Slips List */}
+        {/* Slips List with Images */}
         <View style={styles.slipsContainer}>
           <Text style={styles.sectionTitle}>Payment History</Text>
           
@@ -329,6 +345,23 @@ export default function WorkerSlipsPage() {
                   </View>
                 </View>
                 
+                {/* Slip Image if available */}
+                {slip.imageUrl && (
+                  <Pressable 
+                    style={styles.slipImageContainer}
+                    onPress={() => openImageModal(slip.imageUrl)}
+                  >
+                    <Image
+                      source={{ uri: slip.imageUrl }}
+                      style={styles.slipImage}
+                      resizeMode="cover"
+                    />
+                    <View style={styles.imageOverlay}>
+                      <MaterialIcons name="zoom-in" size={24} color="#fff" />
+                    </View>
+                  </Pressable>
+                )}
+                
                 {slip.description && (
                   <View style={styles.slipDescription}>
                     <MaterialIcons name="description" size={16} color="#64748b" />
@@ -340,6 +373,29 @@ export default function WorkerSlipsPage() {
           )}
         </View>
       </ScrollView>
+
+      {/* Image Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable 
+            style={styles.modalCloseButton}
+            onPress={() => setModalVisible(false)}
+          >
+            <Ionicons name="close" size={30} color="#fff" />
+          </Pressable>
+          <Image
+            source={{ uri: selectedImage }}
+            style={styles.modalImage}
+            resizeMode="contain"
+          />
+        </View>
+      </Modal>
+
       <Toast />
     </SafeAreaView>
   );
@@ -418,6 +474,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
+    overflow: "hidden",
+  },
+  workerAvatarImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
   },
   workerDetails: {
     flex: 1,
@@ -582,6 +644,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#64748b",
   },
+  slipImageContainer: {
+    marginTop: 12,
+    borderRadius: 8,
+    overflow: "hidden",
+    position: "relative",
+  },
+  slipImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 8,
+  },
+  imageOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   slipDescription: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -596,4 +679,25 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     flex: 1,
   },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalCloseButton: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    zIndex: 10,
+    padding: 10,
+  },
+  modalImage: {
+    width: screenWidth,
+    height: screenWidth,
+  },
 });
+
+// Don't forget to import Modal at the top
+import { Modal } from "react-native";
