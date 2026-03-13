@@ -157,26 +157,74 @@ export default function WorkerDashboardScreen() {
     setModalVisible(false);
   };
 
-  const handleBankDetails = () => {
-    if (!worker && !payment) {
-      Toast.show({
-        type: "error",
-        text1: "Registration Required",
-        text2: "Please register first to add payment details"
-      });
-      return;
-    }
-    if (worker?.isBlocked) {
-      Toast.show({
-        type: "error",
-        text1: "Account Blocked",
-        text2: "Cannot add payment details while account is blocked",
-      });
-      return;
-    }
-    router.push("/bank");
-    setModalVisible(false);
-  };
+  // const handleBankDetails = () => {
+  //   if (!worker && !payment) {
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Registration Required",
+  //       text2: "Please register first to add payment details"
+  //     });
+  //     return;
+  //   }
+  //   if (worker?.isBlocked) {
+  //     Toast.show({
+  //       type: "error",
+  //       text1: "Account Blocked",
+  //       text2: "Cannot add payment details while account is blocked",
+  //     });
+  //     return;
+  //   }
+  //   router.push("/WorkerSlipsPage");
+  //   setModalVisible(false);
+  // };
+
+
+  // In WorkerDashboardScreen.js, update the handleBankDetails function:
+
+const handleBankDetails = () => {
+  if (!worker && !payment) {
+    Toast.show({
+      type: "error",
+      text1: "Registration Required",
+      text2: "Please register first to add payment details"
+    });
+    return;
+  }
+  if (worker?.isBlocked) {
+    Toast.show({
+      type: "error",
+      text1: "Account Blocked",
+      text2: "Cannot add payment details while account is blocked",
+    });
+    return;
+  }
+  // Navigate to WorkerSlipsPage
+  router.push("/WorkerSlipsPage");
+  setModalVisible(false);
+};
+
+const handleBankDetails2 = () => {
+  if (!worker && !payment) {
+    Toast.show({
+      type: "error",
+      text1: "Registration Required",
+      text2: "Please register first to add payment details"
+    });
+    return;
+  }
+  if (worker?.isBlocked) {
+    Toast.show({
+      type: "error",
+      text1: "Account Blocked",
+      text2: "Cannot add payment details while account is blocked",
+    });
+    return;
+  }
+  // Navigate to WorkerSlipsPage
+  router.push("/TransferDetailsPage");
+  setModalVisible(false);
+};
+
 
   const getRegistrationStatus = () => {
     if (!worker && !payment) return "Not Registered";
@@ -333,13 +381,27 @@ export default function WorkerDashboardScreen() {
                   <MaterialIcons name="account-balance" size={24} color="#fff" />
                 </View>
                 <View style={styles.optionContent}>
-                  <Text style={styles.optionTitle}>Payment Details</Text>
+                  <Text style={styles.optionTitle}>Slip Payment Details</Text>
                   <Text style={styles.optionDescription}>
                     Add or update bank details
                   </Text>
                 </View>
                 <MaterialIcons name="chevron-right" size={24} color="#64748b" />
               </Pressable>
+
+               <Pressable style={styles.optionButton} onPress={handleBankDetails2}>
+                <View style={[styles.optionIcon, { backgroundColor: '#ef4444' }]}>
+                  <MaterialIcons name="account-balance" size={24} color="#fff" />
+                </View>
+                <View style={styles.optionContent}>
+                  <Text style={styles.optionTitle}>Transaction Payment Details</Text>
+                  <Text style={styles.optionDescription}>
+                    Add or update bank details
+                  </Text>
+                </View>
+                <MaterialIcons name="chevron-right" size={24} color="#64748b" />
+              </Pressable>
+
             </ScrollView>
 
             <Pressable
