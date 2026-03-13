@@ -157,73 +157,49 @@ export default function WorkerDashboardScreen() {
     setModalVisible(false);
   };
 
-  // const handleBankDetails = () => {
-  //   if (!worker && !payment) {
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Registration Required",
-  //       text2: "Please register first to add payment details"
-  //     });
-  //     return;
-  //   }
-  //   if (worker?.isBlocked) {
-  //     Toast.show({
-  //       type: "error",
-  //       text1: "Account Blocked",
-  //       text2: "Cannot add payment details while account is blocked",
-  //     });
-  //     return;
-  //   }
-  //   router.push("/WorkerSlipsPage");
-  //   setModalVisible(false);
-  // };
+  const handleBankDetails = () => {
+    if (!worker && !payment) {
+      Toast.show({
+        type: "error",
+        text1: "Registration Required",
+        text2: "Please register first to add payment details"
+      });
+      return;
+    }
+    if (worker?.isBlocked) {
+      Toast.show({
+        type: "error",
+        text1: "Account Blocked",
+        text2: "Cannot add payment details while account is blocked",
+      });
+      return;
+    }
+    // Navigate to WorkerSlipsPage
+    router.push("/WorkerSlipsPage");
+    setModalVisible(false);
+  };
 
-
-  // In WorkerDashboardScreen.js, update the handleBankDetails function:
-
-const handleBankDetails = () => {
-  if (!worker && !payment) {
-    Toast.show({
-      type: "error",
-      text1: "Registration Required",
-      text2: "Please register first to add payment details"
-    });
-    return;
-  }
-  if (worker?.isBlocked) {
-    Toast.show({
-      type: "error",
-      text1: "Account Blocked",
-      text2: "Cannot add payment details while account is blocked",
-    });
-    return;
-  }
-  // Navigate to WorkerSlipsPage
-  router.push("/WorkerSlipsPage");
-  setModalVisible(false);
-};
-
-const handleBankDetails2 = () => {
-  if (!worker && !payment) {
-    Toast.show({
-      type: "error",
-      text1: "Registration Required",
-      text2: "Please register first to add payment details"
-    });
-    return;
-  }
-  if (worker?.isBlocked) {
-    Toast.show({
-      type: "error",
-      text1: "Account Blocked",
-      text2: "Cannot add payment details while account is blocked",
-    });
-    return;
-  }
-  // Navigate to WorkerSlipsPage
-  router.push("/TransferDetailsPage");
-  setModalVisible(false);
-};
+  const handleBankDetails2 = () => {
+    if (!worker && !payment) {
+      Toast.show({
+        type: "error",
+        text1: "Registration Required",
+        text2: "Please register first to add payment details"
+      });
+      return;
+    }
+    if (worker?.isBlocked) {
+      Toast.show({
+        type: "error",
+        text1: "Account Blocked",
+        text2: "Cannot add payment details while account is blocked",
+      });
+      return;
+    }
+    // Navigate to WorkerSlipsPage
+    router.push("/TransferDetailsPage");
+    setModalVisible(false);
+  };
 
 
   const getRegistrationStatus = () => {
@@ -378,7 +354,7 @@ const handleBankDetails2 = () => {
 
               <Pressable style={styles.optionButton} onPress={handleBankDetails}>
                 <View style={[styles.optionIcon, { backgroundColor: '#ef4444' }]}>
-                  <MaterialIcons name="account-balance" size={24} color="#fff" />
+                 <MaterialIcons name="receipt" size={24} color="#fff" />
                 </View>
                 <View style={styles.optionContent}>
                   <Text style={styles.optionTitle}>Slip Payment Details</Text>
@@ -389,9 +365,9 @@ const handleBankDetails2 = () => {
                 <MaterialIcons name="chevron-right" size={24} color="#64748b" />
               </Pressable>
 
-               <Pressable style={styles.optionButton} onPress={handleBankDetails2}>
-                <View style={[styles.optionIcon, { backgroundColor: '#ef4444' }]}>
-                  <MaterialIcons name="account-balance" size={24} color="#fff" />
+              <Pressable style={styles.optionButton} onPress={handleBankDetails2}>
+                <View style={[styles.optionIcon, { backgroundColor: '#8b5cf6' }]}>
+                   <MaterialIcons name="swap-horiz" size={24} color="#fff" />
                 </View>
                 <View style={styles.optionContent}>
                   <Text style={styles.optionTitle}>Transaction Payment Details</Text>
@@ -606,7 +582,7 @@ const styles = StyleSheet.create({
     maxHeight: "80%",
   },
   modalHeader: {
-    padding: 25,
+    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#f1f5f9",
   },
@@ -614,14 +590,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#1e293b",
-    marginBottom: 4,
+    marginBottom: 2,
   },
   modalSubtitle: {
     fontSize: 16,
     color: "#64748b",
   },
   modalOptions: {
-    padding: 20,
+    padding: 4,
   },
   optionButton: {
     flexDirection: "row",
@@ -629,7 +605,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
-    marginBottom: 12,
+    marginLeft:16,
+    marginRight:16,
+    marginBottom:4,
     borderWidth: 1,
     borderColor: "#f1f5f9",
   },
@@ -656,7 +634,7 @@ const styles = StyleSheet.create({
   },
   modalCloseButton: {
     backgroundColor: "#f8fafc",
-    padding: 20,
+    padding: 10,
     alignItems: "center",
     borderTopWidth: 1,
     borderTopColor: "#f1f5f9",
