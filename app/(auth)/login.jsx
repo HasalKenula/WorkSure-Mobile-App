@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
@@ -59,39 +59,46 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Login</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View style={styles.container}>
+          <Text style={styles.heading}>Login</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-        autoCapitalize="none"
-      />
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+          />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
 
-      <TouchableOpacity style={styles.button} onPress={submit}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={submit}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
 
-      {/* Register link */}
-      <TouchableOpacity
-        onPress={() => router.push("/(auth)/register")}
-        style={styles.registerContainer}
-      >
-        <Text style={styles.registerText}>
-          Don't have an account? <Text style={styles.registerLink}>Register</Text>
-        </Text>
-      </TouchableOpacity>
-    </View>
+          {/* Register link */}
+          <TouchableOpacity
+            onPress={() => router.push("/(auth)/register")}
+            style={styles.registerContainer}
+          >
+            <Text style={styles.registerText}>
+              Don't have an account? <Text style={styles.registerLink}>Register</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
