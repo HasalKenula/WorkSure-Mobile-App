@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     paddingVertical: 40,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#f59e0b",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     marginBottom: 20,
@@ -337,12 +337,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: "700",
-    color: "#f59e0b",
+    color: "#fff",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: "#64748b",
+    color: "#fff",
   },
   imageSection: {
     alignItems: "center",
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     borderRadius: 70,
     backgroundColor: "#f8fafc",
     borderWidth: 3,
-    borderColor: "#e2e8f0",
+    borderColor: "#f59e0b",
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
