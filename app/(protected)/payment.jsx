@@ -1,16 +1,16 @@
-import React, { useState , useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {useLocalSearchParams, useRouter} from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAuth } from '../../context/AuthContext';
 import Toast from "react-native-toast-message";
 import api from '../services/api';
 
 
-export default function PaymetPage(){
+export default function PaymetPage() {
   const router = useRouter();
   const { planName = "N/A", planPrice = 0 } = useLocalSearchParams();
-  const {jwtToken} = useAuth();
+  const { jwtToken } = useAuth();
 
   const [fullname, setFullname] = useState("");
   const [address, setAddress] = useState("");
@@ -38,11 +38,11 @@ export default function PaymetPage(){
         Toast.show({ type: "error", text1: "Failed to load user" });
       });
   }, [jwtToken]);
-  
-  
 
-  const createPayment = async()=>{
-    try{
+
+
+  const createPayment = async () => {
+    try {
       await api.post(
         "/payment",
         {
@@ -56,15 +56,15 @@ export default function PaymetPage(){
         config
       );
       Toast.show({ type: "success", text1: "Payment successful" });
-      router.replace("/");
-    }catch(err){
+      router.replace("/workerPanel");
+    } catch (err) {
       Toast.show({ type: "error", text1: "Payment failed" });
     }
   };
 
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={Styles.container}>
 
         {/* header */}
@@ -104,14 +104,14 @@ export default function PaymetPage(){
 
           <Text style={Styles.sectionTitle}>Card Details</Text>
 
-          <TextInput 
+          <TextInput
             style={Styles.input}
             placeholder='Card number'
           />
 
-          <View style={{flexDirection:"row", gap: 10}}> 
-            <TextInput style={[Styles.input, {flex:1}]} placeholder='MM/YY'/>
-            <TextInput style={[Styles.input, {flex:1}]} placeholder='CVC'/>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <TextInput style={[Styles.input, { flex: 1 }]} placeholder='MM/YY' />
+            <TextInput style={[Styles.input, { flex: 1 }]} placeholder='CVC' />
           </View>
         </View>
 
@@ -121,29 +121,29 @@ export default function PaymetPage(){
 
           <Text style={Styles.sectionTitle}>Order Summary</Text>
 
-          <SummaryRow label="Plan" value={planName}/>
-          <SummaryRow label="Service Fee" value={`Rs. ${planPrice}`}/>
-          <SummaryRow label="Tax (8%)" value={`Rs. ${(planPrice * 0.08).toFixed(2)}`}/>
+          <SummaryRow label="Plan" value={planName} />
+          <SummaryRow label="Service Fee" value={`Rs. ${planPrice}`} />
+          <SummaryRow label="Tax (8%)" value={`Rs. ${(planPrice * 0.08).toFixed(2)}`} />
 
-          <View style={Styles.divider}/>
-          <SummaryRow label="Total" value={`Rs. ${(planPrice * 1.08).toFixed(2)}`} bold/>
+          <View style={Styles.divider} />
+          <SummaryRow label="Total" value={`Rs. ${(planPrice * 1.08).toFixed(2)}`} bold />
         </View>
 
         {/* confirm button */}
         <TouchableOpacity style={Styles.paybtn} onPress={createPayment}>
           <Text style={Styles.paytext}>Confirm Payment</Text>
         </TouchableOpacity>
-        
+
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function SummaryRow({label, value, bold}){
-  return(
+function SummaryRow({ label, value, bold }) {
+  return (
     <View style={Styles.row}>
-      <Text style={[Styles.rowText, bold && {fontWeight: "bold"}]}>{label}</Text>
-      <Text style={[Styles.rowText, bold && {fontWeight: "bold"}]}>{value}</Text>
+      <Text style={[Styles.rowText, bold && { fontWeight: "bold" }]}>{label}</Text>
+      <Text style={[Styles.rowText, bold && { fontWeight: "bold" }]}>{value}</Text>
     </View>
   );
 }
@@ -156,7 +156,7 @@ const Styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "bold",
-    textAlign : "center",
+    textAlign: "center",
     marginBottom: 8,
     color: "#92400E"
   },
@@ -172,7 +172,7 @@ const Styles = StyleSheet.create({
     marginBottom: 20,
     elevation: 3
   },
-  sectionTitle : {
+  sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 12,
@@ -186,12 +186,12 @@ const Styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: "#FFF7ED"
   },
-  row : {
+  row: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 6
   },
-  rowText : {
+  rowText: {
     color: "#374151"
   },
   divider: {

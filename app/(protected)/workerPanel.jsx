@@ -108,7 +108,7 @@ export default function WorkerDashboardScreen() {
         text2: "You are already registered as a worker",
       });
     } else if (worker) {
-      router.push("/upgradePlan");
+      router.push("/upgrade/UpgradePlanScreen");
     } else {
       router.push("/workerRegistrationPage");
     }
