@@ -296,12 +296,19 @@ export default function WorkerProfileScreen() {
             <Text style={styles.feedbackButtonText}>Add Feedback</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.hireButton}
             onPress={() => router.push(`/hire/${workerId}`)}
           >
             <MaterialIcons name="work" size={18} color="#fff" />
             <Text style={styles.hireButtonText}>Hire Now</Text>
+          </TouchableOpacity> */}
+          <TouchableOpacity
+            style={styles.hireButton}
+            onPress={() => router.push(`/paymentSlip/${workerId}`)}
+          >
+            <MaterialIcons name="work" size={18} color="#fff" />
+            <Text style={styles.hireButtonText}>Payment Slip</Text>
           </TouchableOpacity>
         </View>
       </View>
