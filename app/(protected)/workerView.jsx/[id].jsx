@@ -131,6 +131,7 @@ export default function WorkerView() {
             Check Client information and contact details
           </Text>
         </View>
+
         {/* Profile Card */}
         <View style={styles.card}>
           {/* Image */}
@@ -146,8 +147,14 @@ export default function WorkerView() {
             />
           </View>
 
+          {/* Info */}
+          <View style={styles.infoContainer}>
+            <Text style={styles.name}>{user.name || 'N/A'}</Text>
+            <Text style={styles.role}>{user.jobRole || 'Client'}</Text>
+
+            
+          </View>
         </View>
-        
       </ScrollView>
       <Toast />
     </SafeAreaView>
