@@ -131,7 +131,22 @@ export default function WorkerView() {
             Check Client information and contact details
           </Text>
         </View>
+        {/* Profile Card */}
+        <View style={styles.card}>
+          {/* Image */}
+          <View style={styles.imageContainer}>
+            <Image
+              source={
+                user?.imageUrl
+                  ? { uri: user.imageUrl }
+                  : require('../../../assets/default-user.png')
+              }
+              style={styles.profileImage}
+              defaultSource={require('../../../assets/default-user.png')} // Add default source for better loading
+            />
+          </View>
 
+        </View>
         
       </ScrollView>
       <Toast />
