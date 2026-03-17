@@ -53,7 +53,7 @@ export default function HomeScreen() {
       id: 1,
       title: "Find Workers",
       route: "/workers",
-      colors: ["#3b82f6", "#2563eb"],
+      colors: ["#f59e0b", "#f59e0b"],
       description: "Browse and hire skilled workers",
       icon: <FontAwesome5 name="search" size={28} color="white" />,
     },
@@ -61,7 +61,7 @@ export default function HomeScreen() {
       id: 2,
       title: "Worker Panel",
       route: "/workerPanel",
-      colors: ["#10b981", "#059669"],
+      colors: ["#f59e0b", "#f59e0b"],
       description: "Manage your work profile",
       icon: <FontAwesome5 name="hard-hat" size={28} color="white" />,
     },
@@ -149,7 +149,7 @@ export default function HomeScreen() {
             onPress={handleLogout}
             activeOpacity={0.8}
           >
-            <View style={[styles.logoutGradient, { backgroundColor: "#ef4444" }]}>
+            <View style={[styles.logoutGradient, { backgroundColor: "#f59e0b" }]}>
               <Ionicons name="log-out-outline" size={20} color="white" />
               <Text style={styles.logoutText}>Logout</Text>
             </View>
@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 24,
     paddingBottom: 12,
+    marginBottom: 24,
   },
   quickActionsTitle: {
     fontSize: 24,
@@ -253,6 +254,7 @@ const styles = StyleSheet.create({
   },
   menuGrid: {
     paddingHorizontal: 16,
+    marginBottom: 24,
   },
   menuItemWrapper: {
     marginBottom: 16,

@@ -9,6 +9,8 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
@@ -34,10 +36,10 @@ export default function Register() {
     try {
       // Debug what's available
       console.log("ImagePicker object contains:", Object.keys(ImagePicker));
-      
+
       // Request permissions
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
+
       if (status !== "granted") {
         Alert.alert(
           "Permission Required",
@@ -64,7 +66,7 @@ export default function Register() {
           name: selectedImage.fileName || `profile_${Date.now()}.jpg`,
           type: selectedImage.type || "image/jpeg",
         });
-        
+
         Toast.show({
           type: "success",
           text1: "Success",
@@ -107,7 +109,7 @@ export default function Register() {
 
     try {
       let imageUrl = "";
-      
+
       // Upload image if exists
       if (image) {
         try {
@@ -116,9 +118,9 @@ export default function Register() {
             text1: "Uploading...",
             text2: "Please wait while we upload your image",
           });
-          
+
           imageUrl = await uploadFile(image);
-          
+
           Toast.show({
             type: "success",
             text1: "Success",
@@ -149,7 +151,7 @@ export default function Register() {
 
       // Send registration request
       const response = await api.post("/user", userData);
-      
+
       console.log("Registration response:", response.data);
 
       Toast.show({
@@ -165,7 +167,7 @@ export default function Register() {
 
     } catch (error) {
       console.error("Registration error:", error);
-      
+
       let errorMessage = "Registration failed";
       if (error.response?.status === 400) {
         errorMessage = error.response.data || errorMessage;
@@ -184,130 +186,135 @@ export default function Register() {
   };
 
   return (
-    <ScrollView 
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.scrollContent}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Register</Text>
-        <Text style={styles.subtitle}>Create your account</Text>
-      </View>
-
-      {/* Image Upload Section */}
-      <View style={styles.imageSection}>
-        <TouchableOpacity 
-          style={styles.imageUploadContainer} 
-          onPress={handleImagePick}
-          disabled={loading}
-        >
-          {image ? (
-            <Image source={{ uri: image.uri }} style={styles.profileImage} />
-          ) : (
-            <View style={styles.imagePlaceholder}>
-              <Text style={styles.uploadIcon}>📷</Text>
-              <Text style={styles.uploadText}>Add Profile Image</Text>
-              <Text style={styles.uploadSubtext}>Tap to select</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      </View>
-
-      {/* Form Fields */}
-      <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name *"
-          value={name}
-          onChangeText={setName}
-          editable={!loading}
-        />
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Username *"
-          value={username}
-          onChangeText={setUsername}
-          editable={!loading}
-        />
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Email *"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          editable={!loading}
-        />
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Contact Number *"
-          value={contact}
-          onChangeText={setContact}
-          keyboardType="phone-pad"
-          editable={!loading}
-        />
-        
-        <TextInput
-          style={[styles.input, styles.textArea]}
-          placeholder="Address *"
-          value={address}
-          onChangeText={setAddress}
-          multiline
-          numberOfLines={3}
-          editable={!loading}
-        />
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Password *"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          editable={!loading}
-        />
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password *"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-          editable={!loading}
-        />
-
-        {/* Register Button */}
-        <TouchableOpacity
-          style={[styles.registerButton, loading && styles.buttonDisabled]}
-          onPress={submit}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.registerButtonText}>Register</Text>
-          )}
-        </TouchableOpacity>
-
-        {/* Login Link */}
-        <View style={styles.loginLinkContainer}>
-          <Text style={styles.loginText}>
-            Already have an account?{" "}
-            <Text 
-              style={styles.loginLink} 
-              onPress={() => !loading && router.push("/(auth)/login")}
-            >
-              Login
-            </Text>
-          </Text>
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Register</Text>
+          <Text style={styles.subtitle}>Create your account</Text>
         </View>
-      </View>
 
-      <Toast />
-    </ScrollView>
+        {/* Image Upload Section */}
+        <View style={styles.imageSection}>
+          <TouchableOpacity
+            style={styles.imageUploadContainer}
+            onPress={handleImagePick}
+            disabled={loading}
+          >
+            {image ? (
+              <Image source={{ uri: image.uri }} style={styles.profileImage} />
+            ) : (
+              <View style={styles.imagePlaceholder}>
+                <Text style={styles.uploadIcon}>📷</Text>
+                <Text style={styles.uploadText}>Add Profile Image</Text>
+                <Text style={styles.uploadSubtext}>Tap to select</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
+
+        {/* Form Fields */}
+        <View style={styles.formContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name *"
+            value={name}
+            onChangeText={setName}
+            editable={!loading}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Username *"
+            value={username}
+            onChangeText={setUsername}
+            editable={!loading}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Email *"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            editable={!loading}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Contact Number *"
+            value={contact}
+            onChangeText={setContact}
+            keyboardType="phone-pad"
+            editable={!loading}
+          />
+
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Address *"
+            value={address}
+            onChangeText={setAddress}
+            multiline
+            numberOfLines={3}
+            editable={!loading}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Password *"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            editable={!loading}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Confirm Password *"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            editable={!loading}
+          />
+
+          {/* Register Button */}
+          <TouchableOpacity
+            style={[styles.registerButton, loading && styles.buttonDisabled]}
+            onPress={submit}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.registerButtonText}>Register</Text>
+            )}
+          </TouchableOpacity>
+
+          {/* Login Link */}
+          <View style={styles.loginLinkContainer}>
+            <Text style={styles.loginText}>
+              Already have an account?{" "}
+              <Text
+                style={styles.loginLink}
+                onPress={() => !loading && router.push("/(auth)/login")}
+              >
+                Login
+              </Text>
+            </Text>
+          </View>
+        </View>
+
+        <Toast />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -322,7 +329,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     paddingVertical: 40,
-    backgroundColor: "#f8fafc",
+    backgroundColor: "#f59e0b",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     marginBottom: 20,
@@ -330,12 +337,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: "700",
-    color: "#f59e0b",
+    color: "#fff",
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: "#64748b",
+    color: "#fff",
   },
   imageSection: {
     alignItems: "center",
@@ -347,7 +354,7 @@ const styles = StyleSheet.create({
     borderRadius: 70,
     backgroundColor: "#f8fafc",
     borderWidth: 3,
-    borderColor: "#e2e8f0",
+    borderColor: "#f59e0b",
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",

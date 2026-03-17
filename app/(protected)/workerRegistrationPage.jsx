@@ -1,5 +1,5 @@
-import { Text, StyleSheet, ScrollView ,TextInput,View, TouchableOpacity, Pressable} from "react-native";
-import {useState, useEffect} from "react";
+import { Text, StyleSheet, ScrollView, TextInput, View, TouchableOpacity, Pressable } from "react-native";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -9,14 +9,14 @@ import Checkbox from "expo-checkbox";
 import * as DocumentPicker from "expo-document-picker";
 import uploadFile from "../utils/mediaUpload";
 import {
-  Ionicons,
-  MaterialIcons,
-  FontAwesome,
-  Feather,
-  MaterialCommunityIcons,
+    Ionicons,
+    MaterialIcons,
+    FontAwesome,
+    Feather,
+    MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-export default function WorkerRegistartion(){
+export default function WorkerRegistartion() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -32,30 +32,30 @@ export default function WorkerRegistartion(){
     const [userId, setUserId] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const {jwtToken} = useAuth();
+    const { jwtToken } = useAuth();
     const router = useRouter();
 
     //load user data
-    useEffect(()=>{
-            if(!jwtToken) return;
-    
-            api
-            .get("/user",{headers:{Authorization: `Bearer ${jwtToken}`}})
-            .then((res)=>{
+    useEffect(() => {
+        if (!jwtToken) return;
+
+        api
+            .get("/user", { headers: { Authorization: `Bearer ${jwtToken}` } })
+            .then((res) => {
                 setUserId(res.data.id);
                 setName(res.data.name);
                 setEmail(res.data.email);
                 setPhoneNumber(res.data.contact);
                 setAddress(res.data.address);
             })
-            .catch(()=> Toast.show(
+            .catch(() => Toast.show(
                 {
                     type: "error",
-                    text1 : "Failed to load user",
+                    text1: "Failed to load user",
                     text2: "Please try again"
                 }
             ));
-        },[jwtToken]);
+    }, [jwtToken]);
 
     const jobOptions = [
         "PLUMBER",
@@ -83,7 +83,7 @@ export default function WorkerRegistartion(){
 
     const toggleDay = (day) => {
         setDays(
-            (prev)=> prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+            (prev) => prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
         );
     };
 
@@ -101,18 +101,18 @@ export default function WorkerRegistartion(){
     const handleSubmit = async () => {
         if (!document) {
             Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: "Please upload document",
+                type: "error",
+                text1: "Error",
+                text2: "Please upload document",
             });
             return;
         }
 
-        if(!name || !email || !phoneNumber || !nic || !address || !job || !location){
+        if (!name || !email || !phoneNumber || !nic || !address || !job || !location) {
             Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: "Please fill required fields",
+                type: "error",
+                text1: "Error",
+                text2: "Please fill required fields",
             });
             return;
         }
@@ -128,74 +128,74 @@ export default function WorkerRegistartion(){
 
 
             await api.post(
-            "/worker",
-            {
-                fullName: name,
-                email,
-                phoneNumber,
-                nic,
-                address,
-                jobRole: job,
-                preferredStartTime: starttime,
-                preferredEndTime: endtime,
-                preferredServiceLocation: location,
-                pdfUrl,
-                userId,
+                "/worker",
+                {
+                    fullName: name,
+                    email,
+                    phoneNumber,
+                    nic,
+                    address,
+                    jobRole: job,
+                    preferredStartTime: starttime,
+                    preferredEndTime: endtime,
+                    preferredServiceLocation: location,
+                    pdfUrl,
+                    userId,
 
-                mon: days.includes("Mon"),
-                tue: days.includes("Tue"),
-                wed: days.includes("Wed"),
-                thu: days.includes("Thu"),
-                fri: days.includes("Fri"),
-                sat: days.includes("Sat"),
-                sun: days.includes("Sun"),
+                    mon: days.includes("Mon"),
+                    tue: days.includes("Tue"),
+                    wed: days.includes("Wed"),
+                    thu: days.includes("Thu"),
+                    fri: days.includes("Fri"),
+                    sat: days.includes("Sat"),
+                    sun: days.includes("Sun"),
 
-                certificates: certifications.map((c) => ({
-                certificateName: c.name,
-                issuingBody: c.body,
-                })),
+                    certificates: certifications.map((c) => ({
+                        certificateName: c.name,
+                        issuingBody: c.body,
+                    })),
 
-                jobExperiences: experiences.map((e) => ({
-                companyName: e.company,
-                jobTitle: e.title,
-                years: Number(e.years),
-                })),
-            },
-            {
-                headers: { Authorization: `Bearer ${jwtToken}` },
-            }
+                    jobExperiences: experiences.map((e) => ({
+                        companyName: e.company,
+                        jobTitle: e.title,
+                        years: Number(e.years),
+                    })),
+                },
+                {
+                    headers: { Authorization: `Bearer ${jwtToken}` },
+                }
             );
 
             Toast.show({
-            type: "success",
-            text1: "Registration successful!",
+                type: "success",
+                text1: "Registration successful!",
             });
 
-            router.push("/planUpgradePage");
+            router.push("/upgrade/UpgradePlanScreen");
         } catch (err) {
             console.log(err);
             Toast.show({
-            type: "error",
-            text1: "Registration failed",
+                type: "error",
+                text1: "Registration failed",
             });
         } finally {
             setLoading(false);
         }
-};
+    };
 
     const palnUpgrade = () => {
         router.push("/upgradePlan");
     }
 
 
-    return(
+    return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 {/* Header */}
                 <View style={styles.header}>
                     <Pressable style={styles.backButton} onPress={() => router.back()}>
-                    <Ionicons name="arrow-back" size={24} color="#fff" />
+                        <Ionicons name="arrow-back" size={24} color="#fff" />
                     </Pressable>
                     <Text style={styles.headerTitle}>Worker Registration</Text>
                     <Text style={styles.headerSubtitle}>Register as a Skilled Worker</Text>
@@ -203,7 +203,7 @@ export default function WorkerRegistartion(){
 
                 {/* PERSONAL INFO */}
                 <View style={styles.section}>
-                    
+
                     <View style={styles.sectionHeader}>
                         <Ionicons name="person" size={24} color="#f59e0b" />
                         <Text style={styles.sectionTitle}>Personal Information</Text>
@@ -239,10 +239,10 @@ export default function WorkerRegistartion(){
                             <Text style={styles.label}>Select Applying Job Role <Text style={{ color: "red" }}>*</Text></Text>
                             <View style={styles.pickerWrapper}>
                                 <Picker selectedValue={job} onValueChange={setJob} style={{ height: 50 }}>
-                                <Picker.Item label="Select Job" value=""/>
+                                    <Picker.Item label="Select Job" value="" />
                                     {jobOptions.map(
-                                        (j)=>(
-                                            <Picker.Item key={j} label={j} value={j}/>
+                                        (j) => (
+                                            <Picker.Item key={j} label={j} value={j} />
                                         )
                                     )}
                                 </Picker>
@@ -253,16 +253,16 @@ export default function WorkerRegistartion(){
 
                 {/* CERTIFICATIONS AND QUALIFICATIONS */}
                 <View style={styles.section}>
-                    
+
                     <View style={styles.sectionHeader}>
                         <MaterialIcons name="school" size={24} color="#f59e0b" />
                         <Text style={styles.sectionTitle}>Certifications and Qualifications</Text>
                     </View>
-                    
+
                     {
                         certifications.map(
                             (item, index) => (
-                                <View key={index}style={styles.card}>
+                                <View key={index} style={styles.card}>
                                     <View style={styles.inputContainer}>
                                         <Text style={styles.label}>Certification Name</Text>
                                         <TextInput style={styles.input} placeholder="e.g. NVQ Level 4" value={item.name} onChangeText={
@@ -271,7 +271,7 @@ export default function WorkerRegistartion(){
                                                 copy[index].name = text;
                                                 setCertifications(copy);
                                             }
-                                            }
+                                        }
                                         />
                                     </View>
 
@@ -283,14 +283,14 @@ export default function WorkerRegistartion(){
                                                 copy[index].body = text;
                                                 setCertifications(copy);
                                             }
-                                        }/>
+                                        } />
                                     </View>
 
                                     {
                                         certifications.length > 1 && (
                                             <TouchableOpacity style={styles.removeBtn} onPress={() =>
                                                 setCertifications(certifications.filter((_, i) => i !== index))
-                                        }>
+                                            }>
                                                 <Text style={styles.removeText}>Remove</Text>
                                             </TouchableOpacity>
                                         )
@@ -299,17 +299,17 @@ export default function WorkerRegistartion(){
                             )
                         )
                     }
-                    
+
                     <TouchableOpacity
-                                    style={styles.addBtn}
-                                    onPress={() =>
-                                    setCertifications([
-                                        ...certifications,
-                                        { name: "", body: ""},
-                                    ])
-                                    }
-                                >
-                                    <Text style={styles.addText}>+ Add Certification</Text>
+                        style={styles.addBtn}
+                        onPress={() =>
+                            setCertifications([
+                                ...certifications,
+                                { name: "", body: "" },
+                            ])
+                        }
+                    >
+                        <Text style={styles.addText}>+ Add Certification</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -319,49 +319,49 @@ export default function WorkerRegistartion(){
                         <MaterialIcons name="work" size={24} color="#f59e0b" />
                         <Text style={styles.sectionTitle}>Work Experiences</Text>
                     </View>
-                    
+
                     {
                         experiences.map(
                             (item, index) => (
-                                <View key={index}style={styles.card}>
+                                <View key={index} style={styles.card}>
                                     <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Job Title</Text>
-                                    <TextInput style={styles.input} placeholder="Enter job title" value={item.title} onChangeText={
-                                        (text) => {
-                                            const copy = [...experiences];
-                                            copy[index].title = text;
-                                            setExperiences(copy);
-                                        }
-                                    }/>
+                                        <Text style={styles.label}>Job Title</Text>
+                                        <TextInput style={styles.input} placeholder="Enter job title" value={item.title} onChangeText={
+                                            (text) => {
+                                                const copy = [...experiences];
+                                                copy[index].title = text;
+                                                setExperiences(copy);
+                                            }
+                                        } />
                                     </View>
 
                                     <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Company</Text>
-                                    <TextInput style={styles.input} placeholder="Enter company name" value={item.company} onChangeText={
-                                        (text) => {
-                                            const copy = [...experiences];
-                                            copy[index].company = text;
-                                            setExperiences(copy);
-                                        }
-                                    }/>
+                                        <Text style={styles.label}>Company</Text>
+                                        <TextInput style={styles.input} placeholder="Enter company name" value={item.company} onChangeText={
+                                            (text) => {
+                                                const copy = [...experiences];
+                                                copy[index].company = text;
+                                                setExperiences(copy);
+                                            }
+                                        } />
                                     </View>
 
                                     <View style={styles.inputContainer}>
-                                    <Text style={styles.label}>Years</Text>
-                                    <TextInput style={styles.input} placeholder="Enter worked years" value={item.years} onChangeText={
-                                        (text) => {
-                                            const copy = [...experiences];
-                                            copy[index].years = text;
-                                            setExperiences(copy);
-                                        }
-                                    }/>
+                                        <Text style={styles.label}>Years</Text>
+                                        <TextInput style={styles.input} placeholder="Enter worked years" value={item.years} onChangeText={
+                                            (text) => {
+                                                const copy = [...experiences];
+                                                copy[index].years = text;
+                                                setExperiences(copy);
+                                            }
+                                        } />
                                     </View>
 
                                     {
                                         experiences.length > 1 && (
                                             <TouchableOpacity style={styles.removeBtn} onPress={() =>
                                                 setExperiences(experiences.filter((_, i) => i !== index))
-                                        }>
+                                            }>
                                                 <Text style={styles.removeText}>Remove</Text>
                                             </TouchableOpacity>
                                         )
@@ -372,15 +372,15 @@ export default function WorkerRegistartion(){
                     }
 
                     <TouchableOpacity
-                                    style={styles.addBtn}
-                                    onPress={() =>
-                                    setExperiences([
-                                        ...experiences,
-                                        { title: "", company: "", years: ""},
-                                    ])
-                                    }
-                                >
-                                    <Text style={styles.addText}>+ Add Experience</Text>
+                        style={styles.addBtn}
+                        onPress={() =>
+                            setExperiences([
+                                ...experiences,
+                                { title: "", company: "", years: "" },
+                            ])
+                        }
+                    >
+                        <Text style={styles.addText}>+ Add Experience</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -392,47 +392,47 @@ export default function WorkerRegistartion(){
                     </View>
 
                     <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Choose working days</Text>
-                    {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((d) => (
-                        <View key={d} style={styles.checkboxRow}>
-                        <Checkbox 
-                            value={days.includes(d)} 
-                            onValueChange={() => toggleDay(d)}
-                            color={days.includes(d) ? "#889094" : "#9ca3af"}
-                        />
-                        <Text>{d}</Text>
-                        </View>
-                    ))}
+                        <Text style={styles.label}>Choose working days</Text>
+                        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
+                            <View key={d} style={styles.checkboxRow}>
+                                <Checkbox
+                                    value={days.includes(d)}
+                                    onValueChange={() => toggleDay(d)}
+                                    color={days.includes(d) ? "#889094" : "#9ca3af"}
+                                />
+                                <Text>{d}</Text>
+                            </View>
+                        ))}
                     </View>
 
                     <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Preferred Location <Text style={{ color: "red" }}>*</Text></Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="e.g. Colombo"
-                        value={location}
-                        onChangeText={setLocation}
-                    />
+                        <Text style={styles.label}>Preferred Location <Text style={{ color: "red" }}>*</Text></Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="e.g. Colombo"
+                            value={location}
+                            onChangeText={setLocation}
+                        />
                     </View>
-                            
+
                     <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Preferred Start Time</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="08:00"
-                        value={starttime}
-                        onChangeText={setStarttime}
-                    />
+                        <Text style={styles.label}>Preferred Start Time</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="08:00"
+                            value={starttime}
+                            onChangeText={setStarttime}
+                        />
                     </View>
-                            
+
                     <View style={styles.inputContainer}>
-                    <Text style={styles.label}>Preferred End Time</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="17:00"
-                        value={endtime}
-                        onChangeText={setEndtime}
-                    />
+                        <Text style={styles.label}>Preferred End Time</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="17:00"
+                            value={endtime}
+                            onChangeText={setEndtime}
+                        />
                     </View>
                 </View>
 
@@ -447,7 +447,7 @@ export default function WorkerRegistartion(){
                     <Pressable style={styles.uploadArea} onPress={pickDocument}>
                         <MaterialIcons name="cloud-upload" size={48} color="#94a3b8" />
                         <Text style={styles.uploadText}>
-                        {document ? document.name : "Upload Documents"}
+                            {document ? document.name : "Upload Documents"}
                         </Text>
                     </Pressable>
                     {/* <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
@@ -463,14 +463,14 @@ export default function WorkerRegistartion(){
                 </TouchableOpacity> */}
 
                 <Pressable style={styles.submitButton} onPress={handleSubmit}>
-                          <Text style={styles.submitButtonText}>Register Account</Text>
+                    <Text style={styles.submitButtonText}>Register Account</Text>
                 </Pressable>
 
                 <Pressable style={styles.submitButton} onPress={palnUpgrade}>
-                          <Text style={styles.submitButtonText}>Go to Payment</Text>
+                    <Text style={styles.submitButtonText}>Go to Payment</Text>
                 </Pressable>
-                
-                <Toast/>
+
+                <Toast />
             </ScrollView>
         </View>
     );
@@ -479,11 +479,11 @@ export default function WorkerRegistartion(){
 const styles = StyleSheet.create(
     {
         container: {
-            flex:1,
+            flex: 1,
             //padding:16,
-            backgroundColor:"#f8fafc",
+            backgroundColor: "#f8fafc",
         },
-        section:{
+        section: {
             backgroundColor: "#fff",
             borderRadius: 20,
             padding: 20,
@@ -497,11 +497,11 @@ const styles = StyleSheet.create(
             borderWidth: 1,
             borderColor: "#f1f5f9",
         },
-        title:{
-            fontSize:24,
-            fontWeight:700,
-            textAlign:"center",
-            marginTop:10
+        title: {
+            fontSize: 24,
+            fontWeight: 700,
+            textAlign: "center",
+            marginTop: 10
         },
         // sectionTitle:{
         //     fontSize: 18,
@@ -519,13 +519,13 @@ const styles = StyleSheet.create(
             color: "#1e293b",
             marginLeft: 10,
         },
-        label:{
+        label: {
             fontSize: 14,
             fontWeight: "600",
             color: "#475569",
             marginBottom: 6,
         },
-        input:{
+        input: {
             backgroundColor: "#f8fafc",
             borderWidth: 1,
             borderColor: "#e2e8f0",
@@ -535,7 +535,7 @@ const styles = StyleSheet.create(
             fontSize: 16,
             color: "#1e293b",
         },
-        card:{
+        card: {
             backgroundColor: "#fff",
             borderRadius: 10,
             padding: 12,
@@ -564,17 +564,19 @@ const styles = StyleSheet.create(
             color: "#fff",
             fontWeight: "600",
         },
-        checkboxRow: {  flexDirection: "row",
+        checkboxRow: {
+            flexDirection: "row",
             alignItems: "center",
             gap: 8,
-            marginBottom: 6, },
+            marginBottom: 6,
+        },
         uploadBtn: {
             backgroundColor: "#f59e0b",
             padding: 12,
             borderRadius: 8,
             marginTop: 10,
         },
-        uploadText: { 
+        uploadText: {
             // color: "#fff", 
             // textAlign: "center" , 
             // fontWeight:600
@@ -589,16 +591,16 @@ const styles = StyleSheet.create(
             padding: 14,
             borderRadius: 8,
             marginVertical: 20,
-            marginBottom:100
+            marginBottom: 100
         },
-        submitText: { color: "#fff", fontWeight: "bold", textAlign: "center",fontSize:16 },
+        submitText: { color: "#fff", fontWeight: "bold", textAlign: "center", fontSize: 16 },
         pickerWrapper: {
             borderWidth: 1,
             borderColor: "#d1d5db",
             borderRadius: 8,
             backgroundColor: "#fff",
             marginBottom: 12,
-            overflow: "hidden", 
+            overflow: "hidden",
         },
         header: {
             backgroundColor: "#f59e0b",

@@ -22,45 +22,36 @@ export default function WorkerProfileScreen() {
   const [worker, setWorker] = useState(null);
   const [loading, setLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
-
-  // mock user ratings
-  const userRate = [
-    {
-      id: 1,
-      name: "John Doe",
-      date: "2023/10/26",
-      rating: 5,
-      message: "Excellent work! Highly recommended."
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      date: "2023/11/02",
-      rating: 4,
-      message: "Good work, punctual and professional."
-    },
-  ];
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     if (!workerId || !jwtToken) return;
 
-    const fetchWorker = async () => {
+    const fetchWorkerAndReviews = async () => {
       try {
-        const res = await api.get(`/worker/id/${workerId}`, {
+        // Fetch worker info
+        const workerRes = await api.get(`/worker/id/${workerId}`, {
           headers: { Authorization: `Bearer ${jwtToken}` },
         });
-        //const data = await res.json();
-        setWorker(res.data);
+        setWorker(workerRes.data);
+       
+
+        // Fetch worker reviews
+        const reviewsRes = await api.get(`/rating/${workerId}`, {
+          headers: { Authorization: `Bearer ${jwtToken}` },
+        });
+        setReviews(reviewsRes.data.ratings || []);
       } catch (err) {
-        console.log("Error fetching worker:", err);
+        console.log("Error fetching worker or reviews:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchWorker();
+    fetchWorkerAndReviews();
   }, [workerId, jwtToken]);
 
+  // Updated function to get working days from boolean properties
   const getWorkingDays = (worker) => {
     if (!worker) return [];
     const days = [];
@@ -74,11 +65,20 @@ export default function WorkerProfileScreen() {
     return days;
   };
 
-  // Calculate average rating
   const calculateAverageRating = () => {
-    if (userRate.length === 0) return "0.0";
-    const total = userRate.reduce((sum, review) => sum + review.rating, 0);
-    return (total / userRate.length).toFixed(1);
+    if (reviews.length === 0) return "0.0";
+    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return (total / reviews.length).toFixed(1);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   if (loading) return (
@@ -95,9 +95,9 @@ export default function WorkerProfileScreen() {
     </View>
   );
 
-  return (
-    // <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+  const workingDays = getWorkingDays(worker);
 
+  return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header with Gradient Background */}
       <View style={styles.header}>
@@ -133,7 +133,9 @@ export default function WorkerProfileScreen() {
           {/* Rating Badge */}
           <View style={styles.ratingBadge}>
             <FontAwesome name="star" size={14} color="#FFD700" />
-            <Text style={styles.ratingText}>{calculateAverageRating()} • {userRate.length} reviews</Text>
+            <Text style={styles.ratingText}>
+              {calculateAverageRating()} • {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+            </Text>
           </View>
         </View>
 
@@ -142,7 +144,7 @@ export default function WorkerProfileScreen() {
           <Ionicons name="location-sharp" size={20} color="#f59e0b" />
           <View style={styles.locationTextContainer}>
             <Text style={styles.locationLabel}>Location</Text>
-            <Text style={styles.locationText}>{worker.address}</Text>
+            <Text style={styles.locationText}>{worker.address || 'Not specified'}</Text>
           </View>
         </View>
 
@@ -152,25 +154,43 @@ export default function WorkerProfileScreen() {
             <Feather name="map-pin" size={20} color="#f59e0b" />
             <Text style={styles.cardTitle}>Working Area</Text>
           </View>
-          <Text style={styles.cardContent}>{worker.preferredServiceLocation}</Text>
+          <Text style={styles.cardContent}>{worker.preferredServiceLocation || 'Not specified'}</Text>
         </View>
 
-        {/* Working Schedule */}
-        <View style={styles.infoCard}>
-          <View style={styles.cardHeader}>
-            <Ionicons name="time" size={20} color="#f59e0b" />
-            <Text style={styles.cardTitle}>Working Schedule</Text>
-          </View>
-          {getWorkingDays(worker).map((day, i) => (
-            <View key={i} style={styles.scheduleItem}>
-              <View style={styles.dayDot} />
-              <Text style={styles.scheduleDay}>{day}</Text>
-              <Text style={styles.scheduleTime}>
-                {worker.preferredStartTime} to {worker.preferredEndTime}
-              </Text>
+        {/* Working Schedule - Fixed to show days from boolean properties */}
+        {workingDays.length > 0 && (
+          <View style={styles.infoCard}>
+            <View style={styles.cardHeader}>
+              <Ionicons name="time" size={20} color="#f59e0b" />
+              <Text style={styles.cardTitle}>Working Schedule</Text>
             </View>
-          ))}
-        </View>
+            {workingDays.map((day, i) => (
+              <View key={i} style={styles.scheduleItem}>
+                <View style={styles.dayDot} />
+                <Text style={styles.scheduleDay}>{day}</Text>
+                <Text style={styles.scheduleTime}>
+                  {worker.preferredStartTime || '09:00'} to {worker.preferredEndTime || '17:00'}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* If no working days are set, show a message or nothing */}
+        {workingDays.length === 0 && worker.preferredWorkingDays && (
+          <View style={styles.infoCard}>
+            <View style={styles.cardHeader}>
+              <Ionicons name="time" size={20} color="#f59e0b" />
+              <Text style={styles.cardTitle}>Working Schedule</Text>
+            </View>
+            <Text style={styles.cardContent}>
+              {worker.preferredWorkingDays}
+            </Text>
+            <Text style={styles.scheduleTime}>
+              {worker.preferredStartTime || '09:00'} to {worker.preferredEndTime || '17:00'}
+            </Text>
+          </View>
+        )}
 
         {/* Certifications */}
         {worker.certificates?.length > 0 && (
@@ -223,41 +243,54 @@ export default function WorkerProfileScreen() {
             <AntDesign name="star" size={20} color="#f59e0b" />
             <Text style={styles.cardTitle}>User Ratings</Text>
             <View style={styles.reviewCount}>
-              <Text style={styles.reviewCountText}>{userRate.length}</Text>
+              <Text style={styles.reviewCountText}>{reviews.length}</Text>
             </View>
           </View>
 
-          {userRate.map((user) => (
-            <View key={user.id} style={styles.reviewItem}>
-              <View style={styles.reviewHeader}>
-                <View style={styles.reviewerAvatar}>
-                  <FontAwesome name="user" size={18} color="#666" />
+          {reviews.length > 0 ? (
+            reviews.map((review) => (
+              <View key={review.id} style={styles.reviewItem}>
+                <View style={styles.reviewHeader}>
+                  <View style={styles.reviewerAvatar}>
+                    {review.user?.imageUrl ? (
+                      <Image
+                        source={{ uri: review.user.imageUrl }}
+                        style={{ width: 40, height: 40, borderRadius: 20 }}
+                      />
+                    ) : (
+                      <FontAwesome name="user-circle" size={24} color="#666" />
+                    )}
+                  </View>
+                  <View style={styles.reviewerInfo}>
+                    <Text style={styles.reviewerName}>{review.user?.name || "Anonymous"}</Text>
+                    <Text style={styles.reviewDate}>{formatDate(review.createdAT)}</Text>
+                  </View>
+                  <View style={styles.starsContainer}>
+                    {[...Array(5)].map((_, i) => (
+                      <FontAwesome
+                        key={i}
+                        name="star"
+                        size={14}
+                        color={i < review.rating ? "#FFD700" : "#E0E0E0"}
+                      />
+                    ))}
+                  </View>
                 </View>
-                <View style={styles.reviewerInfo}>
-                  <Text style={styles.reviewerName}>{user.name}</Text>
-                  <Text style={styles.reviewDate}>{user.date}</Text>
-                </View>
-                <View style={styles.starsContainer}>
-                  {[...Array(5)].map((_, i) => (
-                    <FontAwesome
-                      key={i}
-                      name="star"
-                      size={14}
-                      color={i < user.rating ? "#FFD700" : "#E0E0E0"}
-                    />
-                  ))}
-                </View>
+                <Text style={styles.reviewMessage}>{review.feedback}</Text>
               </View>
-              <Text style={styles.reviewMessage}>{user.message}</Text>
-            </View>
-          ))}
+            ))
+          ) : (
+            <Text style={{ color: "#666", marginTop: 10, textAlign: 'center' }}>
+              No reviews yet. Be the first to review!
+            </Text>
+          )}
         </View>
 
         {/* Action Buttons */}
         <View style={styles.buttonsContainer}>
           <TouchableOpacity
             style={styles.feedbackButton}
-            onPress={() => router.push(`/feedback/${worker.id}`)}
+            onPress={() => router.push(`/feedback/${workerId}`)}
           >
             <Feather name="message-square" size={18} color="#f59e0b" />
             <Text style={styles.feedbackButtonText}>Add Feedback</Text>
@@ -265,7 +298,7 @@ export default function WorkerProfileScreen() {
 
           <TouchableOpacity
             style={styles.hireButton}
-            onPress={() => router.push(`/hire/${worker.id}`)}
+            onPress={() => router.push(`/hire/${workerId}`)}
           >
             <MaterialIcons name="work" size={18} color="#fff" />
             <Text style={styles.hireButtonText}>Hire Now</Text>
@@ -273,9 +306,10 @@ export default function WorkerProfileScreen() {
         </View>
       </View>
     </ScrollView>
-    //</SafeAreaView>
   );
 }
+
+// ... (keep all your existing styles)
 
 const styles = StyleSheet.create({
   container: {
@@ -292,7 +326,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     color: "#666",
-    fontFamily: "System"
   },
   errorText: {
     marginTop: 12,
@@ -377,7 +410,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#1a1a1a",
     marginBottom: 4,
-    fontFamily: "System"
   },
   role: {
     fontSize: 16,

@@ -8,15 +8,20 @@ import {
   ActivityIndicator,
   Pressable,
 } from "react-native";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
-import { Ionicons, MaterialIcons, FontAwesome, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { 
+  Ionicons, 
+  MaterialIcons, 
+  FontAwesome, 
+  Feather, 
+  MaterialCommunityIcons 
+} from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
-const DEFAULT_IMG = require("../../assets/icon.png");
 
+const DEFAULT_IMG = require("../../assets/icon.png");
 
 export default function WorkerProfile() {
   const { jwtToken, isAuthenticated } = useAuth();
@@ -25,34 +30,113 @@ export default function WorkerProfile() {
   const [userId, setUserId] = useState(null);
   const [worker, setWorker] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [averageRating, setAverageRating] = useState(0);
 
-  const config = {
+  // Create config dynamically
+  const getConfig = () => ({
     headers: {
       Authorization: `Bearer ${jwtToken}`,
     },
-  };
+  });
 
   /* ---------- FETCH USER ---------- */
   useEffect(() => {
-    if (!jwtToken) return;
+    if (!jwtToken) {
+      setLoading(false);
+      return;
+    }
 
     api
-      .get("/user", config)
-      .then((res) => setUserId(res.data.id))
-      .catch(() => setLoading(false));
+      .get("/user", getConfig())
+      .then((res) => {
+        setUserId(res.data.id);
+      })
+      .catch((err) => {
+        console.log("Error fetching user:", err);
+        setLoading(false);
+        Toast.show({ 
+          type: "error", 
+          text1: "Failed to load user data" 
+        });
+      });
   }, [jwtToken]);
 
   /* ---------- FETCH WORKER ---------- */
   useEffect(() => {
-    if (!isAuthenticated || !userId) return;
+    if (!isAuthenticated || !userId || !jwtToken) return;
 
     setLoading(true);
     api
-      .get(`/worker/${userId}`, config)
-      .then((res) => setWorker(res.data))
-      .catch(() => Toast.show({ type: "error", text1: "Failed to load profile" }))
+      .get(`/worker/${userId}`, getConfig())
+      .then((res) => {
+        setWorker(res.data);
+      })
+      .catch((err) => {
+        console.log("Error fetching worker:", err);
+        Toast.show({ 
+          type: "error", 
+          text1: "Failed to load profile" 
+        });
+      })
       .finally(() => setLoading(false));
-  }, [isAuthenticated, userId]);
+  }, [isAuthenticated, userId, jwtToken]);
+
+  /* ---------- FETCH REVIEWS ---------- */
+  const getReviews = async () => {
+    if (!worker?.id || !jwtToken) return;
+
+    setReviewsLoading(true);
+
+    try {
+      
+      const res = await api.get(
+        `/rating/${worker.id}`,
+        getConfig()
+      );
+
+      
+      
+      // Handle the response structure from WorkerProfileScreen
+      if (res.data && res.data.ratings && Array.isArray(res.data.ratings)) {
+        setReviews(res.data.ratings);
+        
+        // Calculate average rating
+        if (res.data.ratings.length > 0) {
+          const total = res.data.ratings.reduce((sum, review) => sum + (review.rating || 0), 0);
+          setAverageRating(total / res.data.ratings.length);
+        }
+      } else if (Array.isArray(res.data)) {
+        // Fallback if the API returns array directly
+        setReviews(res.data);
+        
+        if (res.data.length > 0) {
+          const total = res.data.reduce((sum, review) => sum + (review.rating || 0), 0);
+          setAverageRating(total / res.data.length);
+        }
+      } else {
+        setReviews([]);
+      }
+    } catch (err) {
+      
+      // Don't show toast for 404 as it might mean no reviews yet
+      if (err.response?.status !== 404) {
+        Toast.show({
+          type: "error",
+          text1: "Failed to load reviews",
+        });
+      }
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (worker?.id && jwtToken) {
+      getReviews();
+    }
+  }, [worker?.id, jwtToken]);
 
   const getWorkingDays = () => {
     if (!worker) return [];
@@ -67,6 +151,33 @@ export default function WorkerProfile() {
     return days;
   };
 
+  /* ---------- RENDER STARS ---------- */
+  const renderStars = (rating) => {
+    return [...Array(5)].map((_, i) => (
+      <FontAwesome
+        key={i}
+        name="star"
+        size={14}
+        color={i < rating ? "#fbbf24" : "#e2e8f0"}
+      />
+    ));
+  };
+
+  /* ---------- FORMAT DATE ---------- */
+  const formatDate = (dateString) => {
+    if (!dateString) return "Recent";
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (error) {
+      return "Recent";
+    }
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={styles.center}>
@@ -78,10 +189,16 @@ export default function WorkerProfile() {
     );
   }
 
-  if (!worker) return null;
+  if (!worker) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <Text style={styles.errorText}>No worker data found</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["left", "right", "bottom"]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* ================= HEADER WITH GRADIENT ================= */}
         <View style={styles.headerBackground}>
@@ -104,15 +221,17 @@ export default function WorkerProfile() {
                 <MaterialIcons name="work" size={16} color="#fff" />
                 <Text style={styles.role}>{worker.jobRole}</Text>
               </View>
-              
+
               <View style={styles.locationRow}>
-                <Ionicons name="location-sharp" size={18} color="#64748b" />
+                <Ionicons name="location-sharp" size={18} color="#fff" />
                 <Text style={styles.locationText}>{worker.address}</Text>
               </View>
-              
+
               <View style={styles.ratingRow}>
                 <FontAwesome name="star" size={16} color="#fbbf24" />
-                <Text style={styles.ratingText}>5.0 • 75 reviews</Text>
+                <Text style={styles.ratingText}>
+                  {averageRating.toFixed(1)} • {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                </Text>
               </View>
             </View>
 
@@ -120,7 +239,7 @@ export default function WorkerProfile() {
               style={styles.dashboardBtn}
               onPress={() => router.push("/workerDashboard")}
             >
-              <MaterialIcons name="dashboard" size={18} color="#fff" />
+              <MaterialIcons name="dashboard" size={18} color="#f59e0b" />
               <Text style={styles.dashboardText}>Dashboard</Text>
             </Pressable>
           </View>
@@ -137,7 +256,7 @@ export default function WorkerProfile() {
               <Text style={styles.statLabel}>Experiences</Text>
             </View>
           </View>
-          
+
           <View style={styles.statCard}>
             <MaterialIcons name="verified" size={24} color="#f59e0b" />
             <View style={styles.statContent}>
@@ -147,7 +266,7 @@ export default function WorkerProfile() {
               <Text style={styles.statLabel}>Certificates</Text>
             </View>
           </View>
-          
+
           <View style={styles.statCard}>
             <Feather name="calendar" size={24} color="#f59e0b" />
             <View style={styles.statContent}>
@@ -160,8 +279,8 @@ export default function WorkerProfile() {
         </View>
 
         {/* ================= CONTENT ================= */}
-        <InfoCard 
-          title="Working Area" 
+        <InfoCard
+          title="Working Area"
           icon={<Ionicons name="map" size={20} color="#f59e0b" />}
         >
           <View style={styles.cardContent}>
@@ -169,8 +288,8 @@ export default function WorkerProfile() {
           </View>
         </InfoCard>
 
-        <InfoCard 
-          title="Availability Schedule" 
+        <InfoCard
+          title="Availability Schedule"
           icon={<Feather name="clock" size={20} color="#f59e0b" />}
         >
           <View style={styles.cardContent}>
@@ -196,8 +315,8 @@ export default function WorkerProfile() {
           </View>
         </InfoCard>
 
-        <InfoCard 
-          title="Certifications & Skills" 
+        <InfoCard
+          title="Certifications & Skills"
           icon={<MaterialIcons name="verified" size={20} color="#f59e0b" />}
         >
           {worker.certificates?.length ? (
@@ -222,8 +341,8 @@ export default function WorkerProfile() {
           )}
         </InfoCard>
 
-        <InfoCard 
-          title="Work Experience" 
+        <InfoCard
+          title="Work Experience"
           icon={<FontAwesome name="briefcase" size={18} color="#f59e0b" />}
         >
           {worker.jobExperiences?.length ? (
@@ -254,40 +373,70 @@ export default function WorkerProfile() {
           )}
         </InfoCard>
 
-        <InfoCard 
-          title="Client Reviews" 
-          icon={<FontAwesome name="star" size={18} color="#f59e0b" />}
-        >
-          {[1, 2, 3].map((i) => (
-            <View key={i} style={styles.reviewItem}>
-              <View style={styles.reviewHeader}>
-                <View style={styles.reviewerAvatar}>
-                  <FontAwesome name="user" size={16} color="#666" />
-                </View>
-                <View style={styles.reviewerInfo}>
-                  <Text style={styles.reviewerName}>John Doe</Text>
-                  <Text style={styles.reviewDate}>2 weeks ago</Text>
-                </View>
-                <View style={styles.starRow}>
-                  {[1,2,3,4,5].map((star) => (
-                    <FontAwesome key={star} name="star" size={14} color="#fbbf24" />
-                  ))}
-                </View>
+        {/* ================= REVIEWS SECTION ================= */}
+        <View style={styles.reviewsSection}>
+          <View style={styles.sectionHeader}>
+            <FontAwesome name="star" size={24} color="#f59e0b" />
+            <Text style={styles.sectionTitle}>Client Reviews</Text>
+            {reviews.length > 0 && (
+              <View style={styles.reviewCount}>
+                <Text style={styles.reviewCountText}>{reviews.length}</Text>
               </View>
-              <Text style={styles.reviewText}>
-                Excellent service and very professional. Highly recommend!
-              </Text>
-              {i < 2 && <View style={styles.reviewDivider} />}
+            )}
+          </View>
+          
+          <Text style={styles.sectionSubtitle}>
+            What clients say about your work
+          </Text>
+
+          {reviewsLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color="#f59e0b" />
+              <Text style={styles.loadingSmallText}>Loading reviews...</Text>
             </View>
-          ))}
-          <Pressable style={styles.viewAllBtn}>
-            <Text style={styles.viewAllText}>View All Reviews</Text>
-            <MaterialIcons name="arrow-forward" size={16} color="#f59e0b" />
-          </Pressable>
-        </InfoCard>
-        
+          ) : reviews.length > 0 ? (
+            reviews.map((review) => (
+              <View key={review.id} style={styles.reviewItem}>
+                <View style={styles.reviewHeader}>
+                  <View style={styles.reviewerAvatar}>
+                    {review.user?.imageUrl ? (
+                      <Image
+                        source={{ uri: review.user.imageUrl }}
+                        style={styles.reviewerAvatarImage}
+                      />
+                    ) : (
+                      <FontAwesome name="user-circle" size={40} color="#94a3b8" />
+                    )}
+                  </View>
+                  <View style={styles.reviewerInfo}>
+                    <Text style={styles.reviewerName}>
+                      {review.user?.name || "Anonymous User"}
+                    </Text>
+                    <Text style={styles.reviewDate}>
+                      {formatDate(review.createdAT || review.createdAt)}
+                    </Text>
+                  </View>
+                  <View style={styles.starsContainer}>
+                    {renderStars(review.rating || 0)}
+                    <Text style={styles.ratingValue}>{(review.rating || 0).toFixed(1)}</Text>
+                  </View>
+                </View>
+                <Text style={styles.reviewMessage}>
+                  {review.feedback || review.comment || "No comment provided"}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <View style={styles.emptyState}>
+              <FontAwesome name="star-o" size={48} color="#e2e8f0" />
+              <Text style={styles.emptyText}>No reviews yet</Text>
+              <Text style={styles.emptySubtext}>Complete jobs to get reviews</Text>
+            </View>
+          )}
+        </View>
+
         {/* Edit Profile Button */}
-        <Pressable style={styles.editProfileBtn}>
+        <Pressable style={styles.editProfileBtn} onPress={()=>router.push("workerProfileUpdate")}>
           <MaterialIcons name="edit" size={20} color="#fff" />
           <Text style={styles.editProfileText}>Edit Profile</Text>
         </Pressable>
@@ -322,14 +471,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f8fafc",
   },
+  errorText: {
+    fontSize: 18,
+    color: "#64748b",
+  },
   loadingContainer: {
     alignItems: "center",
+    justifyContent: "center",
+    padding: 40,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
     color: "#64748b",
     fontWeight: "500",
+  },
+  loadingSmallText: {
+    marginTop: 8,
+    fontSize: 14,
+    color: "#64748b",
   },
   headerBackground: {
     backgroundColor: "#f59e0b",
@@ -456,9 +616,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 16,
+    padding: 4,
     borderRadius: 16,
-    marginHorizontal: 4,
+    marginHorizontal: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
@@ -622,71 +782,114 @@ const styles = StyleSheet.create({
     backgroundColor: "#f1f5f9",
     marginVertical: 12,
   },
-  reviewItem: {
-    paddingVertical: 12,
+  // Reviews Section Styles - Updated to match WorkerProfileScreen
+  reviewsSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
   },
-  reviewHeader: {
+  sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
   },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#1e293b",
+    marginLeft: 10,
+    flex: 1,
+  },
+  reviewCount: {
+    backgroundColor: "#f59e0b",
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  reviewCountText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: "#64748b",
+    marginBottom: 16,
+  },
+  reviewItem: {
+    backgroundColor: "#F8F9FA",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#F0F0F0",
+  },
+  reviewHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
   reviewerAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#f1f5f9",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+    marginRight: 12,
+  },
+  reviewerAvatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   reviewerInfo: {
     flex: 1,
   },
   reviewerName: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
-    color: "#1e293b",
+    color: "#333",
     marginBottom: 2,
   },
   reviewDate: {
     fontSize: 12,
-    color: "#94a3b8",
+    color: "#999",
   },
-  starRow: {
-    flexDirection: "row",
-  },
-  reviewText: {
-    fontSize: 14,
-    color: "#475569",
-    lineHeight: 20,
-  },
-  reviewDivider: {
-    height: 1,
-    backgroundColor: "#f1f5f9",
-    marginTop: 12,
-  },
-  viewAllBtn: {
+  starsContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    marginTop: 8,
   },
-  viewAllText: {
+  ratingValue: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#f59e0b",
-    marginRight: 6,
+    color: "#1e293b",
+    marginLeft: 6,
+  },
+  reviewMessage: {
+    fontSize: 14,
+    color: "#555",
+    lineHeight: 20,
   },
   emptyState: {
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 30,
+    paddingVertical: 40,
+    backgroundColor: "#f8fafc",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#f1f5f9",
   },
   emptyText: {
+    fontSize: 16,
+    color: "#94a3b8",
+    marginTop: 12,
+  },
+  emptySubtext: {
     fontSize: 14,
     color: "#94a3b8",
-    marginTop: 8,
+    marginTop: 4,
   },
   editProfileBtn: {
     flexDirection: "row",
@@ -711,6 +914,3 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 });
-
-
-

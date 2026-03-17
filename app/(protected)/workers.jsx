@@ -157,7 +157,7 @@ export default function WorkersScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}  edges={["left", "right", "bottom"]}>
       <StatusBar style="dark" />
       <View style={styles.container}>
         {/* Header Section */}
