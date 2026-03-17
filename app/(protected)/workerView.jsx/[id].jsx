@@ -152,7 +152,23 @@ export default function WorkerView() {
             <Text style={styles.name}>{user.name || 'N/A'}</Text>
             <Text style={styles.role}>{user.jobRole || 'Client'}</Text>
 
-            
+            <View style={styles.infoGrid}>
+              <InfoItem label="Email" value={user.email} />
+              <InfoItem label="Contact Number" value={user.contact} />
+              <InfoItem label="Address" value={user.address} />
+              <InfoItem label="User Id" value={user.id ? `U${user.id}` : '-'} />
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.backButton2}
+                onPress={() => router.back()}
+              >
+                <Feather name="arrow-left" size={16} color="#000" style={styles.buttonIcon} />
+                <Text style={styles.backButtonText}>Go Back</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
