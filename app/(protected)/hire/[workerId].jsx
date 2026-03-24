@@ -15,7 +15,6 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useLocalSearchParams } from "expo-router";
 import { useAuth } from "../../../context/AuthContext";
 import { Ionicons, MaterialIcons, FontAwesome, Feather } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../../services/api";
 import DefaultAvatar from "../../../assets/default-user.png";
 
@@ -49,15 +48,6 @@ export default function WorkerHire() {
       .catch(err => console.log("User load error:", err));
   }, [jwtToken]);
 
-  /* ---------------- FETCH WORKER ---------------- */
-  // useEffect(() => {
-  //   if (!workerId) return;
-
-  //   api
-  //     .get(`/worker/id/${workerId}`, config)
-  //     .then(res => setWorker(res.data))
-  //     .catch(err => console.log("Worker load error:", err));
-  // }, [workerId]);
 
   useEffect(() => {
     if (!workerId) return;

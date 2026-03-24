@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRouter, useNavigationState } from "expo-router";
+import { useRouter } from "expo-router";
 import { View, ActivityIndicator } from "react-native";
 
 export default function Index() {
@@ -7,7 +7,6 @@ export default function Index() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Wait until component mounts
     setMounted(true);
   }, []);
 

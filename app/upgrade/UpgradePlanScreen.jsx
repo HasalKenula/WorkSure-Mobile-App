@@ -6,7 +6,7 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import Toast from "react-native-toast-message";
@@ -30,31 +30,31 @@ export default function UpgradePlanScreen() {
       text2: "Payment flow goes here",
     });
 
-    if(plan == "GO"){
+    if (plan == "GO") {
       router.push({
-      pathname: "/payment",
-      params: {
-        planName: "Go",
-        planPrice: 2000,
-      },
+        pathname: "/payment",
+        params: {
+          planName: "Go",
+          planPrice: 2000,
+        },
       });
     }
-    if(plan == "PLUS"){
+    if (plan == "PLUS") {
       router.push({
-      pathname: "/payment",
-      params: {
-        planName: "Plus",
-        planPrice: 4000,
-      },
+        pathname: "/payment",
+        params: {
+          planName: "Plus",
+          planPrice: 4000,
+        },
       });
     }
-    if(plan == "PRO"){
+    if (plan == "PRO") {
       router.push({
-      pathname: "/payment",
-      params: {
-        planName: "Pro",
-        planPrice: 8000,
-      },
+        pathname: "/payment",
+        params: {
+          planName: "Pro",
+          planPrice: 8000,
+        },
       });
     }
   };
@@ -231,37 +231,35 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  /* HEADER */
-  /* HEADER */
-header: {
-  backgroundColor: "#f59e0b",
-  paddingTop: 70,
-  paddingBottom: 30,
-  paddingHorizontal: 20,
-  borderBottomLeftRadius: 30,
-  borderBottomRightRadius: 30,
-  alignItems: "center",   // 👈 center title
-},
+  header: {
+    backgroundColor: "#f59e0b",
+    paddingTop: 70,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    alignItems: "center",
+  },
 
-backBtn: {
-  position: "absolute",
-  top: 60,
-  left: 20,
-  width: 45,
-  height: 45,
-  borderRadius: 22.5,
-  backgroundColor: "rgba(255,255,255,0.2)",  // soft glass look
-  justifyContent: "center",
-  alignItems: "center",
-  borderWidth: 1,
-  borderColor: "rgba(255,255,255,0.4)",
-},
+  backBtn: {
+    position: "absolute",
+    top: 60,
+    left: 20,
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.4)",
+  },
 
-backText: {
-  fontSize: 22,
-  color: "#fff",
-  fontWeight: "bold",
-},
+  backText: {
+    fontSize: 22,
+    color: "#fff",
+    fontWeight: "bold",
+  },
 
 
   headerTitle: {

@@ -47,11 +47,8 @@ export default async function uploadFile(file) {
     }
 }
 
-// Helper function to pick image
 export const pickImage = async () => {
     try {
-        // For React Native, you'll use expo-image-picker
-        // This is a placeholder function
         return null;
     } catch (error) {
         console.error("Image picker error:", error);

@@ -22,6 +22,7 @@ import api from "../../services/api";
 import Toast from "react-native-toast-message";
 import { SafeAreaView } from "react-native-safe-area-context";
 import uploadFile from "../../utils/mediaUpload"; // Import the upload utility
+import { StatusBar } from "expo-status-bar";
 
 const PaymentSIPUpload = () => {
   const router = useRouter();
@@ -118,7 +119,7 @@ const PaymentSIPUpload = () => {
     try {
       // Use array format for newer versions of expo-image-picker
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ['images'], // Changed from ImagePicker.MediaType.Images
+        mediaTypes: ['images'],
         allowsEditing: true,
         quality: 0.8,
         base64: false,
@@ -126,16 +127,16 @@ const PaymentSIPUpload = () => {
 
       if (!result.canceled && result.assets[0]) {
         const asset = result.assets[0];
-        
+
         // Get filename from URI or create one
-        const fileName = asset.fileName || 
-                        asset.uri.split('/').pop() || 
-                        `payment_${Date.now()}.jpg`;
-        
+        const fileName = asset.fileName ||
+          asset.uri.split('/').pop() ||
+          `payment_${Date.now()}.jpg`;
+
         // Get file type from URI or default to image/jpeg
-        const fileType = asset.type || 
-                        (fileName.endsWith('.png') ? 'image/png' : 'image/jpeg');
-        
+        const fileType = asset.type ||
+          (fileName.endsWith('.png') ? 'image/png' : 'image/jpeg');
+
         const file = {
           uri: asset.uri,
           type: fileType,
@@ -144,7 +145,7 @@ const PaymentSIPUpload = () => {
         };
         setPaymentSIP(file);
         setError("");
-        
+
         Toast.show({
           type: "success",
           text1: "Success",
@@ -312,7 +313,9 @@ const PaymentSIPUpload = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <KeyboardAvoidingView 
+      <StatusBar style="dark" />
+
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
@@ -328,7 +331,7 @@ const PaymentSIPUpload = () => {
             >
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
-            
+
             <View style={styles.headerIcon}>
               <MaterialIcons name="receipt" size={40} color="#f59e0b" />
             </View>
@@ -492,7 +495,7 @@ const PaymentSIPUpload = () => {
               <Text style={styles.inputLabel}>
                 Upload Bank SIP/Transaction Screenshot <Text style={styles.required}>*</Text>
               </Text>
-              
+
               <TouchableOpacity
                 style={styles.uploadArea}
                 onPress={handleFilePick}
