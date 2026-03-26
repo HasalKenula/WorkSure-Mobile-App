@@ -11,9 +11,7 @@ import uploadFile from "../utils/mediaUpload";
 import {
     Ionicons,
     MaterialIcons,
-    FontAwesome,
     Feather,
-    MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
 export default function WorkerRegistartion() {
@@ -450,17 +448,7 @@ export default function WorkerRegistartion() {
                             {document ? document.name : "Upload Documents"}
                         </Text>
                     </Pressable>
-                    {/* <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
-                        <Text style={styles.uploadText}>
-                        {document ? document.name : "Upload Documents"}
-                        </Text>
-                    </TouchableOpacity> */}
                 </View>
-
-                {/* Submit */}
-                {/* <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-                    <Text style={styles.submitText}>Register Account</Text>
-                </TouchableOpacity> */}
 
                 <Pressable style={styles.submitButton} onPress={handleSubmit}>
                     <Text style={styles.submitButtonText}>Register Account</Text>
@@ -503,11 +491,6 @@ const styles = StyleSheet.create(
             textAlign: "center",
             marginTop: 10
         },
-        // sectionTitle:{
-        //     fontSize: 18,
-        //     fontWeight: 600,
-        //     marginVertical: 14
-        // },
         sectionHeader: {
             flexDirection: "row",
             alignItems: "center",
@@ -577,9 +560,6 @@ const styles = StyleSheet.create(
             marginTop: 10,
         },
         uploadText: {
-            // color: "#fff", 
-            // textAlign: "center" , 
-            // fontWeight:600
             fontSize: 16,
             fontWeight: "600",
             color: "#334155",

@@ -6,23 +6,17 @@ import {
   StyleSheet,
   ScrollView,
   Pressable,
-  TouchableOpacity,
   ActivityIndicator,
-  Alert,
-  Modal,
-  FlatList,
 } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
+
 import {
   Ionicons,
   MaterialIcons,
-  FontAwesome,
   Feather,
-  MaterialCommunityIcons,
 } from "@expo/vector-icons";
 import api from "../services/api";
 
@@ -114,7 +108,7 @@ export default function WorkerProfileUpdate() {
     setStartTime(data.preferredStartTime || "");
     setEndTime(data.preferredEndTime || "");
     setLocation(data.preferredServiceLocation || "");
-    
+
     // Set days
     const selectedDays = [];
     if (data.mon) selectedDays.push("Mon");
@@ -125,7 +119,7 @@ export default function WorkerProfileUpdate() {
     if (data.sat) selectedDays.push("Sat");
     if (data.sun) selectedDays.push("Sun");
     setDays(selectedDays);
-    
+
     // Set certifications
     if (data.certificates?.length > 0) {
       setCertifications(data.certificates.map(c => ({
@@ -135,7 +129,7 @@ export default function WorkerProfileUpdate() {
     } else {
       setCertifications([{ name: "", body: "" }]);
     }
-    
+
     // Set experiences
     if (data.jobExperiences?.length > 0) {
       setExperiences(data.jobExperiences.map(e => ({
@@ -146,7 +140,7 @@ export default function WorkerProfileUpdate() {
     } else {
       setExperiences([{ title: "", company: "", years: "" }]);
     }
-    
+
     // Set PDF URL if exists
     if (data.pdfUrl) {
       setPdfUrl(data.pdfUrl);
@@ -154,9 +148,9 @@ export default function WorkerProfileUpdate() {
   };
 
   const handleDayChange = (day) => {
-    setDays(prev => 
-      prev.includes(day) 
-        ? prev.filter(d => d !== day) 
+    setDays(prev =>
+      prev.includes(day)
+        ? prev.filter(d => d !== day)
         : [...prev, day]
     );
   };
@@ -223,8 +217,6 @@ export default function WorkerProfileUpdate() {
   };
 
   const uploadFile = async (file) => {
-    // For now, we'll just return a dummy URL
-    // In a real app, you would upload to your server
     return "https://example.com/uploaded-file.pdf";
   };
 
@@ -246,12 +238,10 @@ export default function WorkerProfileUpdate() {
     }
 
     let finalPdfUrl = pdfUrl;
-    
+
     // Upload file if selected
     if (uploadedFile) {
       try {
-        // In a real app, you would upload the file here
-        // finalPdfUrl = await uploadFile(uploadedFile);
         Toast.show({
           type: "info",
           text1: "File upload simulation",
@@ -311,12 +301,12 @@ export default function WorkerProfileUpdate() {
         type: "success",
         text1: "Profile updated successfully!",
       });
-      
+
       // Navigate back after a short delay
       setTimeout(() => {
         router.back();
       }, 1500);
-      
+
     } catch (err) {
       console.log("Update error:", err);
       Toast.show({
@@ -366,7 +356,7 @@ export default function WorkerProfileUpdate() {
             <Ionicons name="person" size={24} color="#f59e0b" />
             <Text style={styles.sectionTitle}>Personal Information</Text>
           </View>
-          
+
           <View style={styles.formGrid}>
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Full Name</Text>
@@ -377,7 +367,7 @@ export default function WorkerProfileUpdate() {
                 placeholder="Enter full name"
               />
             </View>
-            
+
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Email</Text>
               <TextInput
@@ -389,7 +379,7 @@ export default function WorkerProfileUpdate() {
                 autoCapitalize="none"
               />
             </View>
-            
+
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Phone Number</Text>
               <TextInput
@@ -400,7 +390,7 @@ export default function WorkerProfileUpdate() {
                 keyboardType="phone-pad"
               />
             </View>
-            
+
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>NIC Number</Text>
               <TextInput
@@ -410,7 +400,7 @@ export default function WorkerProfileUpdate() {
                 placeholder="Enter NIC"
               />
             </View>
-            
+
             <View style={[styles.inputContainer, { width: '100%' }]}>
               <Text style={styles.inputLabel}>Address</Text>
               <TextInput
@@ -422,7 +412,7 @@ export default function WorkerProfileUpdate() {
                 numberOfLines={2}
               />
             </View>
-            
+
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Job Role</Text>
               <View style={styles.selectContainer}>
@@ -455,7 +445,7 @@ export default function WorkerProfileUpdate() {
             <MaterialIcons name="school" size={24} color="#f59e0b" />
             <Text style={styles.sectionTitle}>Certifications</Text>
           </View>
-          
+
           {certifications.map((cert, index) => (
             <View key={index} style={styles.dynamicItem}>
               <View style={styles.dynamicItemHeader}>
@@ -466,7 +456,7 @@ export default function WorkerProfileUpdate() {
                   </Pressable>
                 )}
               </View>
-              
+
               <View style={styles.formGrid}>
                 <View style={styles.inputContainer}>
                   <Text style={styles.inputLabel}>Certificate Name</Text>
@@ -477,7 +467,7 @@ export default function WorkerProfileUpdate() {
                     placeholder="e.g., Plumbing License"
                   />
                 </View>
-                
+
                 <View style={styles.inputContainer}>
                   <Text style={styles.inputLabel}>Issuing Body</Text>
                   <TextInput
@@ -490,7 +480,7 @@ export default function WorkerProfileUpdate() {
               </View>
             </View>
           ))}
-          
+
           <Pressable style={styles.addButton} onPress={addCertification}>
             <Ionicons name="add-circle" size={20} color="#f59e0b" />
             <Text style={styles.addButtonText}>Add Certification</Text>
@@ -503,7 +493,7 @@ export default function WorkerProfileUpdate() {
             <MaterialIcons name="work" size={24} color="#f59e0b" />
             <Text style={styles.sectionTitle}>Work Experience</Text>
           </View>
-          
+
           {experiences.map((exp, index) => (
             <View key={index} style={styles.dynamicItem}>
               <View style={styles.dynamicItemHeader}>
@@ -514,7 +504,7 @@ export default function WorkerProfileUpdate() {
                   </Pressable>
                 )}
               </View>
-              
+
               <View style={styles.formGrid}>
                 <View style={styles.inputContainer}>
                   <Text style={styles.inputLabel}>Job Title</Text>
@@ -525,7 +515,7 @@ export default function WorkerProfileUpdate() {
                     placeholder="e.g., Senior Plumber"
                   />
                 </View>
-                
+
                 <View style={styles.inputContainer}>
                   <Text style={styles.inputLabel}>Company</Text>
                   <TextInput
@@ -535,7 +525,7 @@ export default function WorkerProfileUpdate() {
                     placeholder="Company name"
                   />
                 </View>
-                
+
                 <View style={styles.inputContainer}>
                   <Text style={styles.inputLabel}>Years of Experience</Text>
                   <TextInput
@@ -549,7 +539,7 @@ export default function WorkerProfileUpdate() {
               </View>
             </View>
           ))}
-          
+
           <Pressable style={styles.addButton} onPress={addExperience}>
             <Ionicons name="add-circle" size={20} color="#f59e0b" />
             <Text style={styles.addButtonText}>Add Experience</Text>
@@ -562,7 +552,7 @@ export default function WorkerProfileUpdate() {
             <Feather name="calendar" size={24} color="#f59e0b" />
             <Text style={styles.sectionTitle}>Availability & Preferences</Text>
           </View>
-          
+
           <Text style={styles.subSectionTitle}>Working Days</Text>
           <View style={styles.daysContainer}>
             {dayOptions.map((day) => (
@@ -583,7 +573,7 @@ export default function WorkerProfileUpdate() {
               </Pressable>
             ))}
           </View>
-          
+
           <Text style={styles.subSectionTitle}>Working Hours</Text>
           <View style={styles.timeContainer}>
             <View style={styles.timeInputContainer}>
@@ -598,7 +588,7 @@ export default function WorkerProfileUpdate() {
                 <Feather name="clock" size={20} color="#64748b" />
               </View>
             </View>
-            
+
             <View style={styles.timeInputContainer}>
               <Text style={styles.inputLabel}>End Time</Text>
               <View style={styles.timeInput}>
@@ -612,7 +602,7 @@ export default function WorkerProfileUpdate() {
               </View>
             </View>
           </View>
-          
+
           <View style={styles.inputContainer}>
             <Text style={styles.inputLabel}>Preferred Service Location</Text>
             <TextInput
@@ -630,12 +620,12 @@ export default function WorkerProfileUpdate() {
             <MaterialIcons name="attach-file" size={24} color="#f59e0b" />
             <Text style={styles.sectionTitle}>Documents</Text>
           </View>
-          
+
           <Pressable style={styles.uploadArea} onPress={pickDocument}>
             <MaterialIcons name="cloud-upload" size={48} color="#94a3b8" />
             <Text style={styles.uploadText}>Upload PDF or Images</Text>
             <Text style={styles.uploadSubtext}>Tap to browse or drag & drop</Text>
-            
+
             {uploadedFile ? (
               <View style={styles.fileInfo}>
                 <MaterialIcons name="picture-as-pdf" size={24} color="#f59e0b" />
@@ -663,7 +653,7 @@ export default function WorkerProfileUpdate() {
           <Text style={styles.submitButtonText}>Update Profile</Text>
         </Pressable>
       </ScrollView>
-      
+
       <Toast />
     </View>
   );

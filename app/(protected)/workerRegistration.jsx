@@ -455,7 +455,7 @@ const styles = StyleSheet.create(
             borderRadius: 8,
             backgroundColor: "#fff",
             marginBottom: 12,
-            overflow: "hidden", // IMPORTANT
+            overflow: "hidden", 
         },
     }
 );

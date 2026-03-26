@@ -7,7 +7,7 @@ export default function AuthLayout() {
 
   if (loading) return null;
 
-  // If already logged in → go to home
+  // If already logged in go to home
   if (isAuthenticated) {
     return <Redirect href="/home" />;
   }

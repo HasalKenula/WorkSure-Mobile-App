@@ -34,7 +34,7 @@ export default function WorkerProfileScreen() {
           headers: { Authorization: `Bearer ${jwtToken}` },
         });
         setWorker(workerRes.data);
-       
+
 
         // Fetch worker reviews
         const reviewsRes = await api.get(`/rating/${workerId}`, {
@@ -296,13 +296,6 @@ export default function WorkerProfileScreen() {
             <Text style={styles.feedbackButtonText}>Add Feedback</Text>
           </TouchableOpacity>
 
-          {/* <TouchableOpacity
-            style={styles.hireButton}
-            onPress={() => router.push(`/hire/${workerId}`)}
-          >
-            <MaterialIcons name="work" size={18} color="#fff" />
-            <Text style={styles.hireButtonText}>Hire Now</Text>
-          </TouchableOpacity> */}
           <TouchableOpacity
             style={styles.hireButton}
             onPress={() => router.push(`/paymentSlip/${workerId}`)}

@@ -9,12 +9,13 @@ import {
   ActivityIndicator,
   Dimensions
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context'; // Changed import
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAuth } from '../../../context/AuthContext';
 import Toast from 'react-native-toast-message';
 import { Feather } from '@expo/vector-icons';
 import api from "../../services/api";
+import { StatusBar } from "expo-status-bar";
 
 const { width } = Dimensions.get('window');
 
@@ -23,7 +24,7 @@ export default function WorkerView() {
   const router = useRouter();
   const { isAuthenticated, jwtToken } = useAuth();
 
-  
+
 
   const config = {
     headers: {
@@ -37,12 +38,12 @@ export default function WorkerView() {
 
   async function loadWorkerDetails() {
     try {
-     
+
       const response = await api.get(
         `/user/${id}`,
         config
       );
-     
+
       setUser(response.data);
       Toast.show({
         type: 'success',
@@ -50,7 +51,7 @@ export default function WorkerView() {
         text2: 'Worker details loaded successfully'
       });
     } catch (error) {
-     
+
       setError(error.response?.data?.message || 'Failed to load worker details');
       Toast.show({
         type: 'error',
@@ -63,13 +64,11 @@ export default function WorkerView() {
   }
 
   useEffect(() => {
-    
+
     if (isAuthenticated && id) {
       loadWorkerDetails();
     } else if (!isAuthenticated) {
       console.log("Not authenticated, redirecting...");
-      // Optionally redirect to login
-      // router.replace('/login');
     }
   }, [isAuthenticated, id]);
 
@@ -117,6 +116,8 @@ export default function WorkerView() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <StatusBar style="dark" />
+
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header with Back Button */}
         <View style={styles.header}>
@@ -143,7 +144,7 @@ export default function WorkerView() {
                   : require('../../../assets/default-user.png')
               }
               style={styles.profileImage}
-              defaultSource={require('../../../assets/default-user.png')} // Add default source for better loading
+              defaultSource={require('../../../assets/default-user.png')}
             />
           </View>
 

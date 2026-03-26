@@ -10,7 +10,6 @@ import {
   TextInput,
 
 } from "react-native";
-import axios from "axios";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
@@ -41,7 +40,7 @@ export default function WorkersScreen() {
         },
       });
       setWorkers(res.data);
-      setFilteredWorkers(res.data); // initial filtered list
+      setFilteredWorkers(res.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -157,7 +156,7 @@ export default function WorkersScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }}  edges={["left", "right", "bottom"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8fafc" }} edges={["left", "right", "bottom"]}>
       <StatusBar style="dark" />
       <View style={styles.container}>
         {/* Header Section */}

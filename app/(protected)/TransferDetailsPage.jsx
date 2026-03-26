@@ -18,8 +18,6 @@ import {
     Ionicons,
     MaterialIcons,
     FontAwesome,
-    Feather,
-    MaterialCommunityIcons
 } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LineChart } from 'react-native-chart-kit';

@@ -11,12 +11,12 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
-import { 
-  Ionicons, 
-  MaterialIcons, 
-  FontAwesome, 
-  Feather, 
-  MaterialCommunityIcons 
+import {
+  Ionicons,
+  MaterialIcons,
+  FontAwesome,
+  Feather,
+  MaterialCommunityIcons
 } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
@@ -56,9 +56,9 @@ export default function WorkerProfile() {
       .catch((err) => {
         console.log("Error fetching user:", err);
         setLoading(false);
-        Toast.show({ 
-          type: "error", 
-          text1: "Failed to load user data" 
+        Toast.show({
+          type: "error",
+          text1: "Failed to load user data"
         });
       });
   }, [jwtToken]);
@@ -75,9 +75,9 @@ export default function WorkerProfile() {
       })
       .catch((err) => {
         console.log("Error fetching worker:", err);
-        Toast.show({ 
-          type: "error", 
-          text1: "Failed to load profile" 
+        Toast.show({
+          type: "error",
+          text1: "Failed to load profile"
         });
       })
       .finally(() => setLoading(false));
@@ -90,18 +90,18 @@ export default function WorkerProfile() {
     setReviewsLoading(true);
 
     try {
-      
+
       const res = await api.get(
         `/rating/${worker.id}`,
         getConfig()
       );
 
-      
-      
+
+
       // Handle the response structure from WorkerProfileScreen
       if (res.data && res.data.ratings && Array.isArray(res.data.ratings)) {
         setReviews(res.data.ratings);
-        
+
         // Calculate average rating
         if (res.data.ratings.length > 0) {
           const total = res.data.ratings.reduce((sum, review) => sum + (review.rating || 0), 0);
@@ -110,7 +110,7 @@ export default function WorkerProfile() {
       } else if (Array.isArray(res.data)) {
         // Fallback if the API returns array directly
         setReviews(res.data);
-        
+
         if (res.data.length > 0) {
           const total = res.data.reduce((sum, review) => sum + (review.rating || 0), 0);
           setAverageRating(total / res.data.length);
@@ -119,8 +119,8 @@ export default function WorkerProfile() {
         setReviews([]);
       }
     } catch (err) {
-      
-      // Don't show toast for 404 as it might mean no reviews yet
+
+
       if (err.response?.status !== 404) {
         Toast.show({
           type: "error",
@@ -384,7 +384,7 @@ export default function WorkerProfile() {
               </View>
             )}
           </View>
-          
+
           <Text style={styles.sectionSubtitle}>
             What clients say about your work
           </Text>
@@ -436,7 +436,7 @@ export default function WorkerProfile() {
         </View>
 
         {/* Edit Profile Button */}
-        <Pressable style={styles.editProfileBtn} onPress={()=>router.push("workerProfileUpdate")}>
+        <Pressable style={styles.editProfileBtn} onPress={() => router.push("workerProfileUpdate")}>
           <MaterialIcons name="edit" size={20} color="#fff" />
           <Text style={styles.editProfileText}>Edit Profile</Text>
         </Pressable>
@@ -782,7 +782,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f1f5f9",
     marginVertical: 12,
   },
-  // Reviews Section Styles - Updated to match WorkerProfileScreen
   reviewsSection: {
     paddingHorizontal: 20,
     marginBottom: 24,

@@ -15,13 +15,9 @@ import Toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../context/AuthContext";
 import api from "../services/api";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Ionicons,
   MaterialIcons,
-  FontAwesome,
-  MaterialCommunityIcons,
-  Feather,
 } from "@expo/vector-icons";
 
 const { width } = Dimensions.get('window');
@@ -57,8 +53,6 @@ export default function WorkerDashboardScreen() {
       .get("/user", config)
       .then((res) => {
         setUserId(res.data.id);
-        // Also fetch worker stats if available
-        fetchWorkerStats(res.data.id);
       })
       .catch(() => { })
       .finally(() => setLoading(false));
@@ -87,15 +81,6 @@ export default function WorkerDashboardScreen() {
       setPayment(res.data);
     } catch {
       setPayment(null);
-    }
-  };
-
-  const fetchWorkerStats = async (id) => {
-    try {
-      const res = await api.get(`/worker/${id}/stats`, config);
-      setStats(res.data);
-    } catch {
-      // If stats endpoint doesn't exist, use default values
     }
   };
 
@@ -354,12 +339,12 @@ export default function WorkerDashboardScreen() {
 
               <Pressable style={styles.optionButton} onPress={handleBankDetails}>
                 <View style={[styles.optionIcon, { backgroundColor: '#ef4444' }]}>
-                 <MaterialIcons name="receipt" size={24} color="#fff" />
+                  <MaterialIcons name="receipt" size={24} color="#fff" />
                 </View>
                 <View style={styles.optionContent}>
                   <Text style={styles.optionTitle}>Slip Payment Details</Text>
                   <Text style={styles.optionDescription}>
-                    Add or update bank details
+                    See your Slip Payment details
                   </Text>
                 </View>
                 <MaterialIcons name="chevron-right" size={24} color="#64748b" />
@@ -367,12 +352,12 @@ export default function WorkerDashboardScreen() {
 
               <Pressable style={styles.optionButton} onPress={handleBankDetails2}>
                 <View style={[styles.optionIcon, { backgroundColor: '#8b5cf6' }]}>
-                   <MaterialIcons name="swap-horiz" size={24} color="#fff" />
+                  <MaterialIcons name="swap-horiz" size={24} color="#fff" />
                 </View>
                 <View style={styles.optionContent}>
                   <Text style={styles.optionTitle}>Transaction Payment Details</Text>
                   <Text style={styles.optionDescription}>
-                    Add or update bank details
+                    See your Transaction details
                   </Text>
                 </View>
                 <MaterialIcons name="chevron-right" size={24} color="#64748b" />
@@ -605,9 +590,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
-    marginLeft:16,
-    marginRight:16,
-    marginBottom:4,
+    marginLeft: 16,
+    marginRight: 16,
+    marginBottom: 4,
     borderWidth: 1,
     borderColor: "#f1f5f9",
   },

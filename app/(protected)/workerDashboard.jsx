@@ -4,13 +4,10 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Pressable,
-  Image,
   ActivityIndicator,
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "expo-router";
 import Toast from "react-native-toast-message";
@@ -21,8 +18,6 @@ import {
   FontAwesome,
   Feather,
   MaterialCommunityIcons,
-  AntDesign,
-  FontAwesome5,
 } from "@expo/vector-icons";
 import api from "../services/api";
 
